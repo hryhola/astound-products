@@ -1,9 +1,23 @@
-# Express API project
+# Astound Practice Program
 
-Api endpoints for EXPRESS project.
+An empty platform for astound practice
 
 ## Installation
 Clone project from git repository, and run:
 
     $ npm install
-Put all required data while installing service.
+
+## How to run project
+To compile and start project, run:
+
+    $ npm run start
+
+
+To compile frontend manually, run
+
+    $ npm run compile
+
+Or to watching changes, run:
+
+    $ npm run compile-watch
+
