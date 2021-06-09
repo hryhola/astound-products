@@ -1,13 +1,13 @@
 import { store } from "./store/store";
 import { fetchProducts } from "./store/productsSlice";
+const masterProduct = require("./components/masterProduct.handlebars");
+require("./components/masterProduct.css");
 
-window.addEventListener("load", function () {
-    const currentPage = this.window.location.pathname;
 
-    if (currentPage !== "/list") return;
-
+const handleProductsLoad = () => {
     store.subscribe(() => {
         const { products } = store.getState();
+
         const list = document.getElementById("list");
         const spinner = document.getElementById("list-spinner");
 
@@ -18,9 +18,15 @@ window.addEventListener("load", function () {
             spinner.classList.add("d-none");
             list.classList.remove("d-none");
 
-            list.children[1].innerHTML = products.list.reduce((p, c) => p.concat("<p>" + c.name + "</p>"), ""); // TODO: replace with hbs
+            const listData = document.getElementById("list-data");
+
+            listData.innerHTML = products.list.map((l) => masterProduct(l)).join("");
         }
     });
+};
 
-    store.dispatch(fetchProducts());
-});
+window.location.pathname === "/list" &&
+    window.addEventListener("load", function () {
+        handleProductsLoad();
+        store.dispatch(fetchProducts());
+    });

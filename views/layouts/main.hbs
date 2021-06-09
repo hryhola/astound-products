@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>E-commerce Shop</title>
-        <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" />
-    </head>
-    <body>
-        {{> header}}
-        {{{body}}}
-    </body>
-    <script src="lib/jquery/jquery.min.js"></script>
-    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/compiled/app.js"></script>
+
+<head>
+    <meta charset="utf-8">
+    <title>E-commerce Shop</title>
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" />
+    {{#each css}}
+    <link rel="stylesheet" href="../css/{{this}}">
+    {{/each}}
+</head>
+
+<body>
+    {{> header}}
+    {{{body}}}
+</body>
+<script src="lib/jquery/jquery.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/compiled/app.js"></script>
+
 </html>

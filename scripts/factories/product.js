@@ -18,13 +18,12 @@ module.exports = {
             variations: apiMasterProduct.variations.map((v) => {
                 const details = ProductMgr.getProduct(v.pid);
                 return {
+                    ...v,
                     name: details.name,
                     shortDescription: details.shortDescription || apiMasterProduct.shortDescription,
                     longDescription: details.longDescription || apiMasterProduct.longDescription,
-                    price: details.price || apiMasterProduct.price,
                     color: details.custom.color || apiMasterProduct.custom.color,
-                    price: details.custom.price || apiMasterProduct.custom.price,
-                    ...v,
+                    price: details.price || apiMasterProduct.price,
                 };
             }),
         };
