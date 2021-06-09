@@ -2,10 +2,15 @@ const products = require('~/db/products.json');
 
 const ProductMgr = {};
 
-ProductMgr.getProduct = function (productId) {
-    return products.find(function (product) {
-        return product.id === productId;
-    });
+ProductMgr.getProduct = (productId) => {
+    return products.find((product) => product.id === productId);
 };
+
+ProductMgr.getAllProductes = () => products;
+
+ProductMgr.getAllMasterProductes = () => products.filter(p => p.isMaster);
+
+
+
 
 module.exports = ProductMgr;

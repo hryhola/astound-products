@@ -8,12 +8,13 @@
     "compile": "webpack --config ./app/config/webpack.client.js",
     "compile-watch": "webpack --watch --progress --config ./app/config/webpack.client.js",
     "server": "npm run prepare-dirs && webpack --watch --progress --config ./app/config/webpack.server.js",
-    "prepare-dirs": "rm -rf ./app/.compiled && mkdir ./app/.compiled",
+    "prepare-dirs": "rmdir .\\app\\compiled && mkdir .\\app\\compiled",
     "postinstall": "node ./app/bin/createEnv && node ./app/bin/createDirs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^5.0.1",
     "express": "^4.16.3",
     "express-handlebars": "^5.3.2",
     "hbs": "^4.1.2",

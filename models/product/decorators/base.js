@@ -7,4 +7,8 @@ module.exports = function (product, apiProduct) {
         enumerable: true,
         value: apiProduct.name
     });
+    Object.defineProperty(product, 'image', {
+        enumerable: true,
+        value: apiProduct.image 
+    });
 }

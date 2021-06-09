@@ -6,7 +6,7 @@ const webpack = require('webpack')
 const WebpackShellPlugin = require('webpack-shell-plugin')
 
 const SUPPORTED_BROWSERS = {
-  chrome: 'google-chrome',
+  chrome: 'start',
   firefox: 'firefox'
 }
 

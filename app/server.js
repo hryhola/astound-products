@@ -18,6 +18,9 @@ app.engine('.hbs', hbs.engine)
 app.set('view engine', '.hbs')
 app.use(express.static('static'))
 
+app.use('/lib/bootstrap', express.static(path.resolve('node_modules/bootstrap/dist')))
+app.use('/lib/jquery', express.static(path.resolve('node_modules/jquery/dist')))
+
 fs.readdir(path.resolve('controllers'), 'utf8', function (err, files) {
   if (err) {
     return log.info(err.message)

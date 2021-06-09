@@ -1,22 +1,33 @@
-const ProductMgr = require('~/scripts/managers/ProductMgr');
-
-const productTile = require('~/models/product/productTile');
-const fullProduct = require('~/models/product/fullProduct');
+const ProductMgr = require("~/scripts/managers/ProductMgr");
+const productTile = require("~/models/product/productTile");
+const fullProduct = require("~/models/product/fullProduct");
+const masterProduct = require("~/models/product/masterProduct");
 
 module.exports = {
-    get: function (params) {
-        const productId = params.pid;
-        const apiProduct = ProductMgr.getProduct(productId);
-        let product = {};
-
-        switch (params.pview) {
-            case 'tile': 
-                product = productTile(product, apiProduct, {});
-                break;
+    createProduct: function (apiProduct, view) {
+        switch (view) {
+            case "tile":
+                return productTile({}, apiProduct, {});
             default:
-                product = fullProduct(product, apiProduct, {});
-                break;
+                return fullProduct({}, apiProduct, {});
         }
-        return product;
-    }
-}
+    },
+    createMasterProduct: function (apiMasterProduct) {
+        const withVariations = {
+            ...apiMasterProduct,
+            variations: apiMasterProduct.variations.map((v) => {
+                const details = ProductMgr.getProduct(v.pid);
+                return {
+                    name: details.name,
+                    shortDescription: details.shortDescription || apiMasterProduct.shortDescription,
+                    longDescription: details.longDescription || apiMasterProduct.longDescription,
+                    price: details.price || apiMasterProduct.price,
+                    color: details.custom.color || apiMasterProduct.custom.color,
+                    price: details.custom.price || apiMasterProduct.custom.price,
+                    ...v,
+                };
+            }),
+        };
+        return masterProduct({}, withVariations);
+    },
+};
