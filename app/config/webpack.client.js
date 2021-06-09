@@ -13,7 +13,8 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         options: {
-            presets: ['@babel/preset-env']
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/transform-runtime']
         },
         exclude: [
           path.resolve('node_modules'),
