@@ -1,21 +1,28 @@
-import { store } from "./store/store";
-import { fetchProducts, selectVariation } from "./store/productsSlice";
-import { buildList } from "./list.utils";
 
+import { store } from "./store/store";
+import { fetchProducts, selectVariation, addToBasket } from "./store/productsSlice";
+import { buildList } from "./list.utils";
+const addModal = require("./components/addToBasket.handlebars");
 require("./components/masterProduct.css");
 
 const handleSelectSize = (e) => {
     const variationId = e.target.dataset.pid;
     const masterId = e.target.dataset.master;
     store.dispatch(selectVariation({ masterId, variationId }));
-}
+};
+
+const handleAdd = (e) => {
+    e.preventDefault();
+    const masterId = e.target.dataset.id;
+    store.dispatch(addToBasket(masterId));
+};
 
 const handleProductsLoad = () => {
     let prevIsLoading = true;
     store.subscribe(() => {
         const { products } = store.getState();
-        
-        if(prevIsLoading === products.isLoading) return;
+
+        if (prevIsLoading === products.isLoading) return;
         prevIsLoading === !products.isLoading;
 
         const list = document.getElementById("list");
@@ -34,13 +41,14 @@ const handleProductsLoad = () => {
 
             const masterProducts = document.getElementsByClassName("master-product");
 
-            [...masterProducts].forEach(master => {
-                const addBtn = master.getElementsByClassName("master-product__add-button")[0];
+            [...masterProducts].forEach((master) => {
                 const variantBtn = master.getElementsByClassName("master-product__select-variant");
+                const addBtn = master.getElementsByClassName("master-product__add-button");
 
-                [...variantBtn].forEach(v => v.addEventListener("click", handleSelectSize))
+                addBtn[0] && addBtn[0].addEventListener("click", handleAdd);
 
-            })
+                [...variantBtn].forEach((v) => v.addEventListener("click", handleSelectSize));
+            });
         }
     });
 };
@@ -48,5 +56,8 @@ const handleProductsLoad = () => {
 window.location.pathname === "/list" &&
     window.addEventListener("load", function () {
         handleProductsLoad();
+
+        document.body.innerHTML += addModal();
+
         store.dispatch(fetchProducts());
     });

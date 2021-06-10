@@ -1,6 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { calcToalWithoutDiscount } from "./productsUtils";
 
-const initialState = { list: [], isLoading: false, error: undefined, basket: [] };
+const initialState = {
+    list: [],
+    isLoading: false,
+    error: undefined,
+    basket: {
+        items: [],
+        totalDiscount: 0,
+        shipping: 10,
+    },
+};
 
 const url = "http://localhost:8089";
 
@@ -29,6 +39,41 @@ const productsSlice = createSlice({
                 l.isSelected = l.pid === variationId;
             });
         },
+        addToBasket(state, { payload: masterId }) {
+            const master = state.list.find(m => m.ID === masterId);
+            const variation = master.variations.find(v => v.isSelected);
+            const variationId = variation.pid;
+
+            const item = state.basket.items.find((i) => i.masterId === masterId && i.variationId === variationId);
+
+            if (item) {
+                if (item.quantity === 5) throw new Error("5 items max");
+                item.quantity++;
+                if (item.quantity > 1) {
+                    item.discount = 10;
+                }
+            } else {
+                state.basket.items.push({
+                    masterId,
+                    variationId,
+                    pricePerOne: variation.price,
+                    quantity: 1,
+                    discount: 0,
+                });
+            }
+
+            const totalWithoutDiscount = calcToalWithoutDiscount(state.basket);
+            console.log(totalWithoutDiscount);
+
+            if (totalWithoutDiscount > 300) {
+                state.basket.totalDiscount = 20;
+            } 
+            
+            if (totalWithoutDiscount > 350) {
+                state.basket.shipping = 0;
+            }
+
+        },
     },
     extraReducers: {
         [fetchProducts.rejected]: (state, { error }) => {
@@ -53,5 +98,5 @@ const productsSlice = createSlice({
     },
 });
 
-export const { selectVariation } = productsSlice.actions;
+export const { selectVariation, addToBasket } = productsSlice.actions;
 export default productsSlice.reducer;
