@@ -1,0 +1,11 @@
+<div class="dropdown d-inline-block w-100">
+    <button class="btn btn-secondary dropdown-toggle master-product__select-dropdown w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        {{variationAttribute}}: {{displayValue}}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        {{#each variant}}
+        <li><a class="dropdown-item master-product__select-variant" data-master="{{master}}" data-pid="{{pid}}">{{this.displayValue}}</a></li>
+        {{/each}}
+    </ul>
+</div>

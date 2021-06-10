@@ -1,12 +1,22 @@
 import { store } from "./store/store";
-import { fetchProducts } from "./store/productsSlice";
-const masterProduct = require("./components/masterProduct.handlebars");
+import { fetchProducts, selectVariation } from "./store/productsSlice";
+import { buildList } from "./list.utils";
+
 require("./components/masterProduct.css");
 
+const handleSelectSize = (e) => {
+    const variationId = e.target.dataset.pid;
+    const masterId = e.target.dataset.master;
+    store.dispatch(selectVariation({ masterId, variationId }));
+}
 
 const handleProductsLoad = () => {
+    let prevIsLoading = true;
     store.subscribe(() => {
         const { products } = store.getState();
+        
+        if(prevIsLoading === products.isLoading) return;
+        prevIsLoading === !products.isLoading;
 
         const list = document.getElementById("list");
         const spinner = document.getElementById("list-spinner");
@@ -20,7 +30,17 @@ const handleProductsLoad = () => {
 
             const listData = document.getElementById("list-data");
 
-            listData.innerHTML = products.list.map((l) => masterProduct(l)).join("");
+            listData.innerHTML = buildList(products.list);
+
+            const masterProducts = document.getElementsByClassName("master-product");
+
+            [...masterProducts].forEach(master => {
+                const addBtn = master.getElementsByClassName("master-product__add-button")[0];
+                const variantBtn = master.getElementsByClassName("master-product__select-variant");
+
+                [...variantBtn].forEach(v => v.addEventListener("click", handleSelectSize))
+
+            })
         }
     });
 };

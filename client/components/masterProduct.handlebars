@@ -1,8 +1,28 @@
-<div class="card master-product m-2">
-    <img class="card-img-top" src={{image}} alt="product">
-    <div class="card-body">
-        <h5 class="card-title">{{name}}</h5>
-        <p class="card-text">{{price}}</p>
-        <a href="#" class="btn btn-primary">Add to basket</a>
+<div class="card master-product m-2" data-id={{ID}}>
+    {{#if image}}
+    <img class="card-img-top master-product__image" src={{image}} alt="product">
+    {{else}}
+    <div class="card-img-top master-product__noimage"> no image available</div>
+    {{/if}}
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">
+            {{#if brand}}
+            <b class="master-product__brand text-secondary">{{brand}}</b>
+            {{/if}}
+            {{name}}
+        </h5>
+        {{#if available}}
+        <div>
+            <p>${{price}}</p>
+        </div>
+        {{/if}}
+        <div class="mt-auto w-100">
+            {{#if available}}
+            {{> variants variant=variations }}
+            <a href="#" class="btn btn-primary mt-2 master-product__add-button">Add to basket</a>
+            {{else}}
+            <a href="#" class="btn btn-secondary disabled w-100 mt-2">Unavailable now</a>
+            {{/if}}
+        </div>
     </div>
 </div>

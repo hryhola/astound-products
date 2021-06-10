@@ -19,10 +19,11 @@ module.exports = {
                 const details = ProductMgr.getProduct(v.pid);
                 return {
                     ...v,
+                    displayValue: v.displayValue.replace(/_/g, " "),
+                    image: details.image || apiMasterProduct.image,
                     name: details.name,
-                    shortDescription: details.shortDescription || apiMasterProduct.shortDescription,
-                    longDescription: details.longDescription || apiMasterProduct.longDescription,
                     color: details.custom.color || apiMasterProduct.custom.color,
+                    size: details.custom.size || apiMasterProduct.custom.size,
                     price: details.price || apiMasterProduct.price,
                 };
             }),

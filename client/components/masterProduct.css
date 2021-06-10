@@ -1,3 +1,26 @@
 .master-product {
-    max-width: 300px;
+    width: 300px;
+    min-height: 480px;
+}
+
+.master-product__image {
+    width: 298px;
+    height: 298px;
+}
+
+.master-product__noimage {
+    width: 298px;
+    height: 298px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.master-product__brand {
+    font-size: 14px;
+}
+
+.master-product__add-button {
+    width: 100%;
 }

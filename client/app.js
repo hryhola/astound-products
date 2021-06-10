@@ -1,2 +1,2 @@
-require('./store/store');
-require('./list');
+require("./store/store");
+require("./list");
