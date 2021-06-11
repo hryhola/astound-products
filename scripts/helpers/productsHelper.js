@@ -22,8 +22,25 @@ productsHelper.getRefinements = () => {
     return {
         price,
         color,
-        size
+        size,
+    };
+};
+
+productsHelper.getCertainProducts = ({ refinements }) => {
+    let products = ProductMgr.getAllProductes();
+
+    if (refinements) {
+        const { name, priceFrom, priceTo, color, size } = refinements;
+
+        if (name) products = products.filter((p) => p.name.includes(name));
+        if (priceFrom) products = products.filter((p) => p.price >= priceFrom);
+        if (priceTo) products = products.filter((p) => p.price <= priceTo);
+        if (color && color.length) products = products.filter((p) => color.includes(p.custom.color));
+        if (size && size.length) products = products.filter((p) => size.includes(p.custom.size));
     }
-}
+
+    // return ProductFactory.createCertainMasterProduct(products) w
+    // TODO finish func
+};
 
 module.exports = productsHelper;
