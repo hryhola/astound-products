@@ -18,6 +18,9 @@ const handleAdd = (e) => {
         store.dispatch(addToBasket(masterId));
         const afterAddModal = getAfterAddModal();
         afterAddModal.show();
+        setTimeout(() => {
+            afterAddModal.hide()
+        }, 5000);
     } catch (e) {
         alert(e.message);
     }
