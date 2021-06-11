@@ -1,4 +1,4 @@
-import { store } from "../../store/store";
+import { store } from "../../store";
 import { fetchProducts, selectVariation, addToBasket } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";

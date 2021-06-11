@@ -1,3 +1,3 @@
-require("./store/store");
+require("./store");
 require("./components/list");
-require("./header");
+require("./components/header");

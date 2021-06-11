@@ -1,5 +1,5 @@
-import { store } from "./store/store";
-import { selectBasketProductsQuantity } from "./store/productSelectors";
+import { store } from "../../store";
+import { selectBasketProductsQuantity } from "../../store/productSelectors";
 
 const setBasketQuantity = (quantity) => {
     const basketLink = document.getElementById("main-header__basket-link");
