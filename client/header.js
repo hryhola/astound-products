@@ -1,8 +1,21 @@
 import { store } from "./store/store";
 import { selectProductsQuantity } from "./store/productSelectors";
 
+const setBasketQuantity = (quantity) => {
+    const basketLink = document.getElementById("main-header__basket-link");
+
+    if (/\[\d+\]/g.test(basketLink.innerText)) {
+        basketLink.innerText = basketLink.innerText.replace(/\[\d+\]/g, "[" + quantity + "]");
+    } else {
+        basketLink.innerText += ` [${quantity}]`
+    }
+}
+
 const handleBasketQuantityDisplay = () => {
-    let prevQuantity = 0;
+    const initState= store.getState();
+    let prevQuantity = selectProductsQuantity(initState.products);
+    setBasketQuantity(prevQuantity)
+
     store.subscribe(() => {
         const state = store.getState();
 
@@ -14,15 +27,7 @@ const handleBasketQuantityDisplay = () => {
 
             prevQuantity = currenQuantity;
 
-            const basketLink = document.getElementById("main-header__basket-link");
-
-            if (/\[\d+\]/g.test(basketLink.innerText)) {
-                basketLink.innerText = basketLink.innerText.replace(/\[\d+\]/g, "[" + currenQuantity + "]");
-            } else {
-                basketLink.innerText += ` [${currenQuantity}]`
-            }
-
-
+            setBasketQuantity(currenQuantity);
         }
     });
 };
