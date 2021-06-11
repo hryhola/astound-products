@@ -1,12 +1,12 @@
-import { store } from "./store/store";
-import { fetchProducts, selectVariation, addToBasket } from "./store/productsSlice";
-import { getAfterAddModal, getErrorAddModal } from "./afterAddModal";
+import { store } from "../../store/store";
+import { fetchProducts, selectVariation, addToBasket } from "../../store/productsSlice";
+import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
-import afterSuccessAddModal from "./components/successAdd.handlebars";
-import afterErrorAddModal from "./components/errorAddModal.handlebars";
+import successAddModalTemplate from "./modals/successAdd.handlebars";
+import errorAddModalTemplate from "./modals/errorAdd.handlebars";
 
-require("./components/masterProduct.css");
+import "../masterProduct.css";
 
 const handleSelectSize = (e) => {
     const variationId = e.target.dataset.pid;
@@ -70,8 +70,8 @@ window.location.pathname === "/list" &&
     window.addEventListener("load", function () {
         handleProductsLoad();
 
-        document.body.innerHTML += afterSuccessAddModal();
-        document.body.innerHTML += afterErrorAddModal();
+        document.body.innerHTML += successAddModalTemplate();
+        document.body.innerHTML += errorAddModalTemplate();
 
         store.dispatch(fetchProducts());
     });

@@ -1,4 +1,3 @@
 require("./store/store");
-require("./list");
+require("./components/list");
 require("./header");
-require("./afterAddModal");
