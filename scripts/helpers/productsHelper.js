@@ -14,4 +14,16 @@ productsHelper.getAllGroupedByMaster = () => {
     return onlyMasterProductes.map((m) => ProductFactory.createMasterProduct(m));
 };
 
+productsHelper.getRefinements = () => {
+    const price = ProductMgr.getMinMaxPrice();
+    const color = ProductMgr.getAllColors();
+    const size = ProductMgr.getAllSizes();
+
+    return {
+        price,
+        color,
+        size
+    }
+}
+
 module.exports = productsHelper;

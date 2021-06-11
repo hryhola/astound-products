@@ -1,0 +1,10 @@
+<div id="{{containerId}}">
+    {{#each variant}}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="{{this.value}}" {{#if this.checked}}checked{{/if}}>
+        <label class="form-check-label">
+            {{this.displayValue}}
+        </label>
+    </div>
+    {{/each}}
+</div>

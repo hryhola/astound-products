@@ -10,6 +10,12 @@ const initialState = {
         totalDiscount: 0,
         shipping: 10,
     },
+    refinement: {
+        price: [0, Infinity],
+        name: "",
+        sizes: [],
+        colors: [],
+    }
 };
 
 const url = "http://localhost:8089";
@@ -17,6 +23,16 @@ const url = "http://localhost:8089";
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async (options, { rejectWithValue }) => {
     try {
         const data = await fetch(`${url}/api/list`).then((r) => r.json());
+        if (data.error) rejectWithValue(data.error);
+        else return data;
+    } catch (e) {
+        return rejectWithValue(e.message);
+    }
+});
+
+export const fetchRefinements = createAsyncThunk("products/fetchRefinements", async (options, { rejectWithValue }) => {
+    try {
+        const data = await fetch(`${url}/api/list/refinements`).then((r) => r.json());
         if (data.error) rejectWithValue(data.error);
         else return data;
     } catch (e) {
@@ -73,6 +89,19 @@ const productsSlice = createSlice({
             }
 
         },
+        setRefinement(state, { payload }) {
+            if(!state.refinement) {
+                state.refinement = {};
+            } 
+            state.refinement[payload.field] = payload.value;
+        },
+        toggleRefinementSizeOrColor (state, { payload }) {
+            const { field, value } = payload;
+
+            const item = state.refinement[field].find(s => s.value === value);
+
+            item.checked = !item.checked;
+        }
     },
     extraReducers: {
         [fetchProducts.rejected]: (state, { error }) => {
@@ -94,8 +123,34 @@ const productsSlice = createSlice({
             state.isLoading = false;
             state.error = undefined;
         },
+        [fetchRefinements.rejected]: (state, { error }) => {
+            state.isLoading = false;
+            state.error = error.message;
+        },
+        [fetchRefinements.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [fetchRefinements.fulfilled]: (state, { payload }) => {
+            if (!state.refinement) state.refinement = {};
+
+            state.refinement = {
+                priceMinMax: payload.data.price,
+                color: payload.data.color.map(c => ({
+                    value: c,
+                    displayValue: c.replace(/_/g, " "),
+                    checked: false,
+                })),
+                size: payload.data.color.map(s => ({
+                    value: s,
+                    displayValue: s.replace(/_/g, " "),
+                    checked: false,
+                })),
+            };
+            state.isLoading = false;
+            state.error = undefined;
+        },
     },
 });
 
-export const { selectVariation, addToBasket } = productsSlice.actions;
+export const { selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor } = productsSlice.actions;
 export default productsSlice.reducer;

@@ -1,5 +1,6 @@
+import _ from "lodash";
 import { store } from "../../store";
-import { fetchProducts, selectVariation, addToBasket } from "../../store/productsSlice";
+import { fetchProducts, selectVariation, addToBasket, fetchRefinements } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
@@ -33,7 +34,22 @@ const handleAdd = (e) => {
     }
 };
 
+const setButtonHandlers = () => {
+    const masterProducts = document.getElementsByClassName("master-product");
+
+    [...masterProducts].forEach((master) => {
+        const variantBtn = master.getElementsByClassName("master-product__select-variant");
+        const addBtn = master.getElementsByClassName("master-product__add-button");
+
+        addBtn[0] && addBtn[0].addEventListener("click", handleAdd);
+
+        [...variantBtn].forEach((v) => v.addEventListener("click", handleSelectSize));
+    });
+};
+
 const handleProductsLoad = () => {
+    let prevList = [];
+
     store.subscribe(() => {
         const { products } = store.getState();
 
@@ -47,21 +63,16 @@ const handleProductsLoad = () => {
             spinner.classList.add("d-none");
             list.classList.remove("d-none");
 
-            const listData = document.getElementById("list-data");
+            if (!_.isEqual(prevList, products.list)) {
+                prevList = products.list;
+                const listData = document.getElementById("list-data");
 
-            console.log("Products list is builded.");
-            listData.innerHTML = buildList(products.list);
+                console.log("Products list is builded.");
 
-            const masterProducts = document.getElementsByClassName("master-product");
+                listData.innerHTML = buildList(products.list);
 
-            [...masterProducts].forEach((master) => {
-                const variantBtn = master.getElementsByClassName("master-product__select-variant");
-                const addBtn = master.getElementsByClassName("master-product__add-button");
-
-                addBtn[0] && addBtn[0].addEventListener("click", handleAdd);
-
-                [...variantBtn].forEach((v) => v.addEventListener("click", handleSelectSize));
-            });
+                setButtonHandlers();
+            }
         }
     });
 };
@@ -74,4 +85,5 @@ window.location.pathname === "/list" &&
         document.body.innerHTML += errorAddModalTemplate();
 
         store.dispatch(fetchProducts());
+        store.dispatch(fetchRefinements());
     });
