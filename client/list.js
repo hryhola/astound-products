@@ -1,8 +1,11 @@
 import { store } from "./store/store";
 import { fetchProducts, selectVariation, addToBasket } from "./store/productsSlice";
+import { getAfterAddModal, getErrorAddModal } from "./afterAddModal";
 import { buildList } from "./list.utils";
-import { getAfterAddModal } from "./afterAddModal";
-const afterSuccessAddModal = require("./components/successAdd.handlebars");
+
+import afterSuccessAddModal from "./components/successAdd.handlebars";
+import afterErrorAddModal from "./components/errorAddModal.handlebars";
+
 require("./components/masterProduct.css");
 
 const handleSelectSize = (e) => {
@@ -19,10 +22,14 @@ const handleAdd = (e) => {
         const afterAddModal = getAfterAddModal();
         afterAddModal.show();
         setTimeout(() => {
-            afterAddModal.hide()
+            afterAddModal.hide();
         }, 5000);
     } catch (e) {
-        alert(e.message);
+        const errorAddModal = getErrorAddModal();
+        errorAddModal.show();
+        setTimeout(() => {
+            errorAddModal.hide();
+        }, 3000);
     }
 };
 
@@ -64,6 +71,7 @@ window.location.pathname === "/list" &&
         handleProductsLoad();
 
         document.body.innerHTML += afterSuccessAddModal();
+        document.body.innerHTML += afterErrorAddModal();
 
         store.dispatch(fetchProducts());
     });
