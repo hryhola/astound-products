@@ -18,12 +18,8 @@ const handleAdd = (e) => {
 };
 
 const handleProductsLoad = () => {
-    let prevIsLoading = true;
     store.subscribe(() => {
         const { products } = store.getState();
-
-        if (prevIsLoading === products.isLoading) return;
-        prevIsLoading === !products.isLoading;
 
         const list = document.getElementById("list");
         const spinner = document.getElementById("list-spinner");
@@ -37,6 +33,7 @@ const handleProductsLoad = () => {
 
             const listData = document.getElementById("list-data");
 
+            console.log("Products list is builded.");
             listData.innerHTML = buildList(products.list);
 
             const masterProducts = document.getElementsByClassName("master-product");
