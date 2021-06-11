@@ -19,8 +19,7 @@
         <div class="mt-auto w-100">
             {{#if available}}
             {{> variants variant=variations }}
-            <a href="#" class="btn btn-primary mt-2 master-product__add-button" data-bs-toggle="modal"
-                data-bs-target="#master-product__add-modal" data-id={{ID}}>Add to basket</a>
+            <a href="#" class="btn btn-primary mt-2 master-product__add-button" data-id={{ID}}>Add to basket</a>
             {{else}}
             <a href="#" class="btn btn-secondary disabled w-100 mt-2">Unavailable now</a>
             {{/if}}

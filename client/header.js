@@ -1,5 +1,5 @@
 import { store } from "./store/store";
-import { selectProductsQuantity } from "./store/productSelectors";
+import { selectBasketProductsQuantity } from "./store/productSelectors";
 
 const setBasketQuantity = (quantity) => {
     const basketLink = document.getElementById("main-header__basket-link");
@@ -13,13 +13,13 @@ const setBasketQuantity = (quantity) => {
 
 const handleBasketQuantityDisplay = () => {
     const initState= store.getState();
-    let prevQuantity = selectProductsQuantity(initState.products);
+    let prevQuantity = selectBasketProductsQuantity(initState.products);
     setBasketQuantity(prevQuantity)
 
     store.subscribe(() => {
         const state = store.getState();
 
-        const currenQuantity = selectProductsQuantity(state.products);
+        const currenQuantity = selectBasketProductsQuantity(state.products);
 
         
         if (currenQuantity !== prevQuantity) {

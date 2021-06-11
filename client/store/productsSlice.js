@@ -63,7 +63,6 @@ const productsSlice = createSlice({
             }
 
             const totalWithoutDiscount = calcToalWithoutDiscount(state.basket);
-            console.log(totalWithoutDiscount);
 
             if (totalWithoutDiscount > 300) {
                 state.basket.totalDiscount = 20;

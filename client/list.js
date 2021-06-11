@@ -1,8 +1,8 @@
-
 import { store } from "./store/store";
 import { fetchProducts, selectVariation, addToBasket } from "./store/productsSlice";
 import { buildList } from "./list.utils";
-const addModal = require("./components/addToBasket.handlebars");
+import { getAfterAddModal } from "./afterAddModal";
+const afterSuccessAddModal = require("./components/successAdd.handlebars");
 require("./components/masterProduct.css");
 
 const handleSelectSize = (e) => {
@@ -14,7 +14,13 @@ const handleSelectSize = (e) => {
 const handleAdd = (e) => {
     e.preventDefault();
     const masterId = e.target.dataset.id;
-    store.dispatch(addToBasket(masterId));
+    try {
+        store.dispatch(addToBasket(masterId));
+        const afterAddModal = getAfterAddModal();
+        afterAddModal.show();
+    } catch (e) {
+        alert(e.message);
+    }
 };
 
 const handleProductsLoad = () => {
@@ -54,7 +60,7 @@ window.location.pathname === "/list" &&
     window.addEventListener("load", function () {
         handleProductsLoad();
 
-        document.body.innerHTML += addModal();
+        document.body.innerHTML += afterSuccessAddModal();
 
         store.dispatch(fetchProducts());
     });
