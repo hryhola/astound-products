@@ -1,11 +1,17 @@
 <tr class="product-row" data-master-id={{masterId}} data-variation-id={{variationId}}>
-    <th scope="row">{{name}}</th>
-    <td>{{detail}}</td>
-    <td>{{pricePerOne}}</td>
-    <td>
+    <th class="basket-row" scope="row">
+        {{name}}
+    {{#if ([helpers/isFive] quantity)}}
+        <br />
+        <span class="text-danger max-items">The maximal allowed quantity is 5 items</span>
+    {{/if}}
+    </th>
+    <td class="basket-row">{{detail}}</td>
+    <td class="basket-row">{{pricePerOne}}</td>
+    <td class="basket-row">
         <a class="quantity-btn quantity-btn--remove" href="#">-</a>
         {{quantity}}
         <a class="quantity-btn quantity-btn--add" href="#">+</a>
     </td>
-    <td><button type="button" class="btn btn-outline-danger remove-item-btn">Remove</button></td>
+    <td class="basket-row"><button type="button" class="btn btn-outline-danger remove-item-btn">Remove</button></td>
 </tr>
