@@ -1,6 +1,7 @@
 const ProductMgr = require("~/scripts/managers/ProductMgr");
 const productTile = require("~/models/product/productTile");
 const fullProduct = require("~/models/product/fullProduct");
+const variation = require("~/models/product/variation");
 const masterProduct = require("~/models/product/masterProduct");
 
 module.exports = {
@@ -12,20 +13,12 @@ module.exports = {
                 return fullProduct({}, apiProduct, {});
         }
     },
-    createMasterProduct: function (apiMasterProduct) {
+    createMasterProduct: function (apiMasterProduct, apiVariations) {
         const withVariations = {
             ...apiMasterProduct,
             variations: apiMasterProduct.variations.map((v) => {
-                const details = ProductMgr.getProduct(v.pid);
-                return {
-                    ...v,
-                    displayValue: v.displayValue.replace(/_/g, " "),
-                    image: details.image || apiMasterProduct.image,
-                    name: details.name,
-                    color: details.custom.color || apiMasterProduct.custom.color,
-                    size: details.custom.size || apiMasterProduct.custom.size,
-                    price: details.price || apiMasterProduct.price,
-                };
+                const details = apiVariations ? apiVariations.find((p) => p.id === v.pid) : ProductMgr.getProduct(v.pid);
+                return variation(v, details, apiMasterProduct, v);
             }),
         };
         return masterProduct({}, withVariations);

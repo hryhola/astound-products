@@ -12,15 +12,15 @@ server.get("/api/list", function (req, res) {
             name: req.query.name,
             priceFrom: parseInt(req.query.priceFrom),
             priceTo: parseInt(req.query.priceTo),
-            color: req.query.color ? req.query.color.split(",") : undefined,
-            size: req.query.size ? req.query.size.split(",") : undefined,
+            color: req.query.color && req.query.color.split(","),
+            size: req.query.size && req.query.size.split(",")
         };
         
         const data = productsHelper.getCertainProducts({
             refinements
         });
 
-        // res.json({ m: "todo"})
+        res.json({ data });
     }
 });
 

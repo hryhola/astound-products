@@ -27,7 +27,8 @@ productsHelper.getRefinements = () => {
 };
 
 productsHelper.getCertainProducts = ({ refinements }) => {
-    let products = ProductMgr.getAllProductes();
+    const allProducts = ProductMgr.getAllProductes();
+    let products = [...allProducts];
 
     if (refinements) {
         const { name, priceFrom, priceTo, color, size } = refinements;
@@ -39,8 +40,30 @@ productsHelper.getCertainProducts = ({ refinements }) => {
         if (size && size.length) products = products.filter((p) => size.includes(p.custom.size));
     }
 
-    // return ProductFactory.createCertainMasterProduct(products) w
-    // TODO finish func
+
+    const variationProducts = products.filter(p => !p.isMaster);
+
+    const masterProducts = 
+        products
+            .filter(p => p.isMaster)
+            .map(p => ({ 
+                ...p, 
+                variations: p.variations.filter(v => variationProducts.some(s => s.id === v.pid))
+                }));
+
+
+    for(const variant of variationProducts) {
+        if (!masterProducts.some(s => s.id === variant.master)) {
+            const master = allProducts.find(p => p.id === variant.master);
+            masterProducts.push({ 
+                ...master, 
+                variations: master.variations.filter(v => variationProducts.some(s => s.id === v.pid))
+            })
+        }
+    }
+
+    return masterProducts.map((m) => ProductFactory.createMasterProduct(m, variationProducts));
 };
 
 module.exports = productsHelper;
+
