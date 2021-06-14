@@ -33,7 +33,7 @@ productsHelper.getCertainProducts = ({ refinements }) => {
     if (refinements) {
         const { name, priceFrom, priceTo, color, size } = refinements;
 
-        if (name) products = products.filter((p) => p.name.includes(name));
+        if (name) products = products.filter((p) => p.name.toLowerCase().includes(name.toLowerCase()));
         if (priceFrom) products = products.filter((p) => p.price >= priceFrom);
         if (priceTo) products = products.filter((p) => p.price <= priceTo);
         if (color && color.length) products = products.filter((p) => color.includes(p.custom.color));

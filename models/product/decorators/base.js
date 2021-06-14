@@ -1,5 +1,5 @@
-module.exports = function (product, apiProduct) {
-    Object.defineProperty(product, 'ID', {
+module.exports = function (product, apiProduct, options = {}) {
+    !options.noId && Object.defineProperty(product, 'ID', {
         enumerable: true,
         value: apiProduct.id
     });

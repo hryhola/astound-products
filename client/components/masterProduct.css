@@ -1,6 +1,6 @@
 .master-product {
     width: 300px;
-    min-height: 480px;
+    max-height: 560px;
 }
 
 .master-product__image {

@@ -160,7 +160,7 @@ const productsSlice = createSlice({
                     displayValue: c.replace(/_/g, " "),
                     checked: false,
                 })),
-                size: payload.data.color.map((s) => ({
+                size: payload.data.size.map((s) => ({
                     value: s,
                     displayValue: s.replace(/_/g, " "),
                     checked: false,
