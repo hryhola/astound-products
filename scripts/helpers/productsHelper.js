@@ -40,30 +40,30 @@ productsHelper.getCertainProducts = ({ refinements }) => {
         if (size && size.length) products = products.filter((p) => size.includes(p.custom.size));
     }
 
+    const variationProducts = products.filter((p) => !p.isMaster);
 
-    const variationProducts = products.filter(p => !p.isMaster);
+    const masterProducts = products
+        .filter((p) => p.isMaster)
+        .map((p) => ({
+            ...p,
+            variations: p.variations.filter((v) => variationProducts.some((s) => s.id === v.pid)),
+        }));
 
-    const masterProducts = 
-        products
-            .filter(p => p.isMaster)
-            .map(p => ({ 
-                ...p, 
-                variations: p.variations.filter(v => variationProducts.some(s => s.id === v.pid))
-                }));
-
-
-    for(const variant of variationProducts) {
-        if (!masterProducts.some(s => s.id === variant.master)) {
-            const master = allProducts.find(p => p.id === variant.master);
-            masterProducts.push({ 
-                ...master, 
-                variations: master.variations.filter(v => variationProducts.some(s => s.id === v.pid))
-            })
+    for (const variant of variationProducts) {
+        if (!masterProducts.some((s) => s.id === variant.master)) {
+            const master = allProducts.find((p) => p.id === variant.master);
+            masterProducts.push({
+                ...master,
+                variations: master.variations.filter((v) => variationProducts.some((s) => s.id === v.pid)),
+            });
         }
     }
 
-    return masterProducts.map((m) => ProductFactory.createMasterProduct(m, variationProducts));
+    const createdMasterProducts = masterProducts.map((m) => ProductFactory.createMasterProduct(m, variationProducts));
+
+    const productsWithVariations = createdMasterProducts.filter((m) => m.variations.length > 0);
+
+    return productsWithVariations;
 };
 
 module.exports = productsHelper;
-
