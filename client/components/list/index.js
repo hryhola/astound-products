@@ -6,6 +6,7 @@ import { buildList } from "./list.utils";
 
 import successAddModalTemplate from "./modals/successAdd.handlebars";
 import errorAddModalTemplate from "./modals/errorAdd.handlebars";
+import noItemsTemplate from "./noItems.handlebars";
 
 import "../masterProduct.css";
 
@@ -68,8 +69,11 @@ const handleProductsLoad = () => {
 
                 const listData = document.getElementById("list-data");
 
-                if(products.list) listData.innerHTML = buildList(products.list);
-
+                if(products.list && products.list.length > 0) {
+                    listData.innerHTML = buildList(products.list);
+                } else {
+                    listData.innerHTML = noItemsTemplate();
+                }
                 setButtonHandlers();
             }
         }

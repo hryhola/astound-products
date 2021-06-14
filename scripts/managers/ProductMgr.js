@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const products = require("~/db/products.json");
 
 const ProductMgr = {};
@@ -17,13 +18,21 @@ ProductMgr.getMinMaxPrice = () => {
 };
 
 ProductMgr.getAllColors = () => {
-    const colors = products.map((p) => p.custom.color).filter(c => !!c);
+    const colors = _.flatten(
+        products
+            .filter((p) => p.isMaster && p.variationAttribute === "color")
+            .map((p) => p.variations)
+        ).map((v) => v.id);
 
     return [...new Set(colors)];
 };
 
 ProductMgr.getAllSizes = () => {
-    const sizes = products.map((p) => p.custom.size).filter(s => !!s);
+    const sizes = _.flatten(
+        products
+            .filter((p) => p.isMaster && p.variationAttribute === "size")
+            .map((p) => p.variations)
+        ).map((v) => v.id);
 
     return [...new Set(sizes)];
 };

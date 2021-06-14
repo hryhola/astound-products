@@ -4,7 +4,7 @@ import refinementTemplate from "./refinement.handlebars";
 import { initPriceSlider } from "./fields/priceSlider";
 import { initNameField } from "./fields/productName";
 import { handleSizeAndColorClick } from "./fields/sizeAndColor";
-import { fetchProducts } from "../../store/productsSlice";
+import { fetchProducts, resetRefinement } from "../../store/productsSlice";
 
 export const setRefinements = (productsSlice) => {
     const [min, max] = productsSlice.refinement.priceMinMax;
@@ -15,6 +15,14 @@ export const setRefinements = (productsSlice) => {
 
     initNameField();
 };
+
+const initResetBtn = () => {
+    const resetBtn = document.getElementById("reset-refinement");
+
+    resetBtn.addEventListener("click", () => {
+        store.dispatch(resetRefinement());
+    });
+}
 
 const initRefinemant = () => {
     const initState = store.getState();
@@ -28,6 +36,7 @@ const initRefinemant = () => {
         const currentRefinement = state.products.refinement;
         if (!_.isEqual(prevRefinement, currentRefinement)) {
             refinementNode.innerHTML = refinementTemplate(currentRefinement);
+            initResetBtn();
             prevRefinement = currentRefinement;
 
             setRefinements(state.products);

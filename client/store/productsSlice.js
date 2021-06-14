@@ -115,6 +115,14 @@ const productsSlice = createSlice({
             }
             state.refinement[payload.field] = payload.value;
         },
+        resetRefinement(state) {
+            if(state.refinement) {
+                state.refinement.name = undefined;
+                state.refinement.priceFromTo = undefined;
+                state.refinement.size = state.refinement.size.map(s => ({ ...s, checked: false }));
+                state.refinement.color = state.refinement.color.map(s => ({ ...s, checked: false }));
+            }
+        },
         toggleRefinementSizeOrColor(state, { payload }) {
             const { field, value } = payload;
 
@@ -172,5 +180,5 @@ const productsSlice = createSlice({
     },
 });
 
-export const { selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor } = productsSlice.actions;
+export const { selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement } = productsSlice.actions;
 export default productsSlice.reducer;

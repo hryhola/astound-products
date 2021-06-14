@@ -1,9 +1,13 @@
 <div class="p-4">
+    <div class="text-center mb-5">
+        <button type="button" id="reset-refinement" class="btn btn-outline-primary">Reset filters</button>
+    </div>
     <div class="text-center">Price</div>
     <input type="text" id="price-range" name="example_name" value="" />
     <div class="text-center mt-4">Name</div>
-    <input id="product-name" type="text" class="form-control mt-3" placeholder="Product Name" aria-label="Name" value="{{name}}" />
-    <div class="text-center mt-4 mb-2" >Size</div>
+    <input id="product-name" type="text" class="form-control mt-3" placeholder="Product Name" aria-label="Name"
+        value="{{name}}" />
+    <div class="text-center mt-4 mb-2">Size</div>
     {{> checkboxs variant=size containerId="size-group" }}
     <div class="text-center mt-4 mb-2">Color</div>
     {{> checkboxs variant=color containerId="color-group" }}
