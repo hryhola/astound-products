@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { get } from "jquery";
+import queryString from "query-string";
 import { calcToalWithoutDiscount } from "./productsUtils";
 
 const initialState = {
@@ -15,14 +17,33 @@ const initialState = {
         name: "",
         sizes: [],
         colors: [],
-    }
+    },
 };
 
 const url = "http://localhost:8089";
 
-export const fetchProducts = createAsyncThunk("products/fetchProducts", async (options, { rejectWithValue }) => {
+export const fetchProducts = createAsyncThunk("products/fetchProducts", async ({ refinement }, { rejectWithValue }) => {
+    let apiUrl = `${url}/api/list`;
+
+    let getParams = {};
+
+    if (refinement) {
+        const { priceFromTo, color, name, size } = refinement;
+
+        getParams = {
+            ...getParams,
+            priceFrom: priceFromTo && priceFromTo[0],
+            priceTo: priceFromTo && priceFromTo[1],
+            name,
+            color: color.filter((c) => c.checked).map((c) => c.value),
+            size: size.filter((s) => s.checked).map((s) => s.value),
+        };
+    }
+
+    const urlWithQuerry = queryString.stringifyUrl({ url: apiUrl, query: getParams }, { arrayFormat: "comma" });
+
     try {
-        const data = await fetch(`${url}/api/list`).then((r) => r.json());
+        const data = await fetch(urlWithQuerry).then((r) => r.json());
         if (data.error) rejectWithValue(data.error);
         else return data;
     } catch (e) {
@@ -56,8 +77,8 @@ const productsSlice = createSlice({
             });
         },
         addToBasket(state, { payload: masterId }) {
-            const master = state.list.find(m => m.ID === masterId);
-            const variation = master.variations.find(v => v.isSelected);
+            const master = state.list.find((m) => m.ID === masterId);
+            const variation = master.variations.find((v) => v.isSelected);
             const variationId = variation.pid;
 
             const item = state.basket.items.find((i) => i.masterId === masterId && i.variationId === variationId);
@@ -82,26 +103,25 @@ const productsSlice = createSlice({
 
             if (totalWithoutDiscount > 300) {
                 state.basket.totalDiscount = 20;
-            } 
-            
+            }
+
             if (totalWithoutDiscount > 350) {
                 state.basket.shipping = 0;
             }
-
         },
         setRefinement(state, { payload }) {
-            if(!state.refinement) {
+            if (!state.refinement) {
                 state.refinement = {};
-            } 
+            }
             state.refinement[payload.field] = payload.value;
         },
-        toggleRefinementSizeOrColor (state, { payload }) {
+        toggleRefinementSizeOrColor(state, { payload }) {
             const { field, value } = payload;
 
-            const item = state.refinement[field].find(s => s.value === value);
+            const item = state.refinement[field].find((s) => s.value === value);
 
             item.checked = !item.checked;
-        }
+        },
     },
     extraReducers: {
         [fetchProducts.rejected]: (state, { error }) => {
@@ -135,12 +155,12 @@ const productsSlice = createSlice({
 
             state.refinement = {
                 priceMinMax: payload.data.price,
-                color: payload.data.color.map(c => ({
+                color: payload.data.color.map((c) => ({
                     value: c,
                     displayValue: c.replace(/_/g, " "),
                     checked: false,
                 })),
-                size: payload.data.color.map(s => ({
+                size: payload.data.color.map((s) => ({
                     value: s,
                     displayValue: s.replace(/_/g, " "),
                     checked: false,

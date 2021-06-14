@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { store } from "../../store";
-import { fetchProducts, selectVariation, addToBasket, fetchRefinements } from "../../store/productsSlice";
+import { selectVariation, addToBasket, fetchRefinements } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
@@ -65,11 +65,10 @@ const handleProductsLoad = () => {
 
             if (!_.isEqual(prevList, products.list)) {
                 prevList = products.list;
+
                 const listData = document.getElementById("list-data");
 
-                console.log("Products list is builded.");
-
-                listData.innerHTML = buildList(products.list);
+                if(products.list) listData.innerHTML = buildList(products.list);
 
                 setButtonHandlers();
             }
@@ -84,6 +83,5 @@ window.location.pathname === "/list" &&
         document.body.innerHTML += successAddModalTemplate();
         document.body.innerHTML += errorAddModalTemplate();
 
-        store.dispatch(fetchProducts());
         store.dispatch(fetchRefinements());
     });

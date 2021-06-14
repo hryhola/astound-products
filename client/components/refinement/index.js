@@ -4,6 +4,7 @@ import refinementTemplate from "./refinement.handlebars";
 import { initPriceSlider } from "./fields/priceSlider";
 import { initNameField } from "./fields/productName";
 import { handleSizeAndColorClick } from "./fields/sizeAndColor";
+import { fetchProducts } from "../../store/productsSlice";
 
 export const setRefinements = (productsSlice) => {
     const [min, max] = productsSlice.refinement.priceMinMax;
@@ -31,6 +32,10 @@ const initRefinemant = () => {
 
             setRefinements(state.products);
             handleSizeAndColorClick();
+
+            store.dispatch(fetchProducts({
+                refinement: currentRefinement
+            }))
         }
     });
 };
