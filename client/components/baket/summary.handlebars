@@ -1,7 +1,14 @@
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Total</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <p>Shipping:
+      {{#if ([helpers/isEqual] shipping defaultShipping)}}
+      <b>${{shipping}}</b>
+      {{else}}
+      <del class="">${{defaultShipping}}</del><b> ${{shipping}}</b>
+      {{/if}}
+    </p>
+    <p>TODO: finish block</p>
     <a href="#" class="btn btn-primary">Calculate taxes</a>
   </div>
 </div>

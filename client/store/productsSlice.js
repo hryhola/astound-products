@@ -9,7 +9,8 @@ const initialState = {
     basket: {
         items: [],
         totalDiscount: 0,
-        shipping: 10,
+        shipping: 15,
+        defaultShipping: 15,
     },
     refinement: {
         price: [0, Infinity],
@@ -62,6 +63,13 @@ export const fetchRefinements = createAsyncThunk("products/fetchRefinements", as
     }
 });
 
+const calcBasketTotal = (state) => {
+    const totalWithoutDiscount = calcToalWithoutDiscount(state.basket);
+
+    state.basket.totalDiscount = totalWithoutDiscount > 300 ? 20 : 0;
+    state.basket.shipping = totalWithoutDiscount > 350 ? 0 : 15;
+}
+
 const productsSlice = createSlice({
     name: "products",
     initialState,
@@ -102,15 +110,7 @@ const productsSlice = createSlice({
                 });
             }
 
-            const totalWithoutDiscount = calcToalWithoutDiscount(state.basket);
-
-            if (totalWithoutDiscount > 300) {
-                state.basket.totalDiscount = 20;
-            }
-
-            if (totalWithoutDiscount > 350) {
-                state.basket.shipping = 0;
-            }
+            calcBasketTotal(state);
         },
         basketItemIncrement(state, { payload }) {
             const { masterId, variationId } = payload;
@@ -120,6 +120,8 @@ const productsSlice = createSlice({
             if (item.quantity === 5) throw new Error(maxBasketItemsErrorMessage);
 
             item.quantity++;
+
+            calcBasketTotal(state);
         },
         basketItemDecrement(state, { payload }) {
             const { masterId, variationId } = payload;
@@ -129,12 +131,15 @@ const productsSlice = createSlice({
             if (item.quantity > 1) {
                 item.quantity--;
             }
+            calcBasketTotal(state);
         },
         basketItemRemove(state, { payload }) {
             const { masterId, variationId } = payload;
 
             state.basket.items = state.basket.items
-                .filter(i => !(i.masterId === masterId && i.variationId === variationId))
+                .filter(i => !(i.masterId === masterId && i.variationId === variationId));
+            
+            calcBasketTotal(state);
         },
         setRefinement(state, { payload }) {
             if (!state.refinement) {

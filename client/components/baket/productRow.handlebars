@@ -1,9 +1,13 @@
 <tr class="product-row" data-master-id={{masterId}} data-variation-id={{variationId}}>
     <th class="basket-row" scope="row">
         {{name}}
-    {{#if ([helpers/isFive] quantity)}}
+    {{#if ([helpers/isEqual] quantity 5)}}
         <br />
         <span class="text-danger max-items">The maximal allowed quantity is 5 items</span>
+    {{/if}}
+    {{#if ([helpers/isGreater] quantity 1)}}
+        <br />
+        <span class="text-info max-items">Discount 10% for more than 2 items!</span>
     {{/if}}
     </th>
     <td class="basket-row">{{detail}}</td>

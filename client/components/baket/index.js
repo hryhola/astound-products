@@ -7,7 +7,8 @@ import summaryTemplate from "./summary.handlebars";
 import errorAddTemplate from "../list/modals/errorAdd.handlebars";
 import { getErrorAddModal } from "../list/modals";
 
-import "./helpers/isFive";
+import "./helpers/isEqual";
+import "./helpers/isGreater";
 import "./basket.css";
 
 const handleItemQuantityIncrement = (e) => {
