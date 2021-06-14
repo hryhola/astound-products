@@ -23,8 +23,6 @@ const handleBasketQuantityDisplay = () => {
 
         
         if (currenQuantity !== prevQuantity) {
-            console.log("Basket quantity updated.");
-
             prevQuantity = currenQuantity;
 
             setBasketQuantity(currenQuantity);

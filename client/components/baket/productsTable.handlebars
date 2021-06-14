@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Your basket products</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Variant</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each items}}
+                    {{> productRow item=this}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { get } from "jquery";
 import queryString from "query-string";
 import { calcToalWithoutDiscount } from "./productsUtils";
 
@@ -21,6 +20,8 @@ const initialState = {
 };
 
 const url = "http://localhost:8089";
+
+export const maxBasketItemsErrorMessage = "5 items max";
 
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async ({ refinement }, { rejectWithValue }) => {
     let apiUrl = `${url}/api/list`;
@@ -84,7 +85,7 @@ const productsSlice = createSlice({
             const item = state.basket.items.find((i) => i.masterId === masterId && i.variationId === variationId);
 
             if (item) {
-                if (item.quantity === 5) throw new Error("5 items max");
+                if (item.quantity === 5) throw new Error(maxBasketItemsErrorMessage);
                 item.quantity++;
                 if (item.quantity > 1) {
                     item.discount = 10;
@@ -94,6 +95,8 @@ const productsSlice = createSlice({
                     masterId,
                     variationId,
                     pricePerOne: variation.price,
+                    detail: variation.displayValue,
+                    name: variation.name,
                     quantity: 1,
                     discount: 0,
                 });
@@ -109,6 +112,30 @@ const productsSlice = createSlice({
                 state.basket.shipping = 0;
             }
         },
+        basketItemIncrement(state, { payload }) {
+            const { masterId, variationId } = payload;
+
+            const item = state.basket.items.find((i) => i.masterId === masterId && i.variationId === variationId);
+
+            if (item.quantity === 5) throw new Error(maxBasketItemsErrorMessage);
+
+            item.quantity++;
+        },
+        basketItemDecrement(state, { payload }) {
+            const { masterId, variationId } = payload;
+
+            const item = state.basket.items.find((i) => i.masterId === masterId && i.variationId === variationId);
+
+            if (item.quantity > 1) {
+                item.quantity--;
+            }
+        },
+        basketItemRemove(state, { payload }) {
+            const { masterId, variationId } = payload;
+
+            state.basket.items = state.basket.items
+                .filter(i => !(i.masterId === masterId && i.variationId === variationId))
+        },
         setRefinement(state, { payload }) {
             if (!state.refinement) {
                 state.refinement = {};
@@ -116,11 +143,11 @@ const productsSlice = createSlice({
             state.refinement[payload.field] = payload.value;
         },
         resetRefinement(state) {
-            if(state.refinement) {
+            if (state.refinement) {
                 state.refinement.name = undefined;
                 state.refinement.priceFromTo = undefined;
-                state.refinement.size = state.refinement.size.map(s => ({ ...s, checked: false }));
-                state.refinement.color = state.refinement.color.map(s => ({ ...s, checked: false }));
+                state.refinement.size = state.refinement.size.map((s) => ({ ...s, checked: false }));
+                state.refinement.color = state.refinement.color.map((s) => ({ ...s, checked: false }));
             }
         },
         toggleRefinementSizeOrColor(state, { payload }) {
@@ -180,5 +207,15 @@ const productsSlice = createSlice({
     },
 });
 
-export const { selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement } = productsSlice.actions;
+export const { 
+    basketItemIncrement, 
+    basketItemDecrement, 
+    basketItemRemove,
+    selectVariation, 
+    addToBasket, 
+    setRefinement, 
+    toggleRefinementSizeOrColor, 
+    resetRefinement 
+} = productsSlice.actions;
+
 export default productsSlice.reducer;

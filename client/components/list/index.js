@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { store } from "../../store";
-import { selectVariation, addToBasket, fetchRefinements } from "../../store/productsSlice";
+import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
@@ -8,7 +8,7 @@ import successAddModalTemplate from "./modals/successAdd.handlebars";
 import errorAddModalTemplate from "./modals/errorAdd.handlebars";
 import noItemsTemplate from "./noItems.handlebars";
 
-import "../masterProduct.css";
+import "./masterProduct.css";
 
 const handleSelectSize = (e) => {
     const variationId = e.target.dataset.pid;
@@ -27,11 +27,13 @@ const handleAdd = (e) => {
             afterAddModal.hide();
         }, 5000);
     } catch (e) {
-        const errorAddModal = getErrorAddModal();
-        errorAddModal.show();
-        setTimeout(() => {
-            errorAddModal.hide();
-        }, 3000);
+        if(e.message === maxBasketItemsErrorMessage) {
+            const errorAddModal = getErrorAddModal();
+            errorAddModal.show();
+            setTimeout(() => {
+                errorAddModal.hide();
+            }, 3000);
+        } else throw e;
     }
 };
 

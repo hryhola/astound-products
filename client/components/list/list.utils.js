@@ -1,4 +1,4 @@
-import masterProductTemplate from "../masterProduct.handlebars";
+import masterProductTemplate from "./masterProduct.handlebars";
 
 export const buildTile = (masterProduct) => {
     const isSelectedIndex = masterProduct.variations.findIndex(v => v.isSelected);
