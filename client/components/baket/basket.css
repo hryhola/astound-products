@@ -18,3 +18,12 @@
 .basket-row {
     vertical-align: middle!important;
 }
+
+.summary__totalDiscountText {
+    font-size: 12px;
+}
+
+.loading {
+    opacity: 0.5;
+    cursor: disabled;
+}

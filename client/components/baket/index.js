@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { store } from "../../store";
-import { basketItemDecrement, basketItemIncrement, basketItemRemove, maxBasketItemsErrorMessage } from "../../store/productsSlice";
+import { basketItemDecrement, basketItemIncrement, basketItemRemove, fetchTax, maxBasketItemsErrorMessage } from "../../store/productsSlice";
+import { calcTotalWithoutTax } from "../../store/productsUtils";
 
 import productsTableTemplate from "./productsTable.handlebars";
 import summaryTemplate from "./summary.handlebars";
@@ -62,27 +63,41 @@ const initAddRemoveBtsn = (tableNode) => {
     });
 };
 
+const initCalcBtn = (basketSlice) => {
+    const calcTaxBtn = document.getElementById("summary__calc-tax");
+
+    calcTaxBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        store.dispatch(fetchTax({ amount: calcTotalWithoutTax(basketSlice) }));
+    });
+}
+
 const initBasket = () => {
     const tableNode = document.getElementById("baket-table");
     const summaryNode = document.getElementById("baket-summary");
 
-    const initBasketState = store.getState().products.basket;
+    const initState = store.getState();
 
-    const buildTable = (basketSlice) => {
+    const initBasketState = { ...initState.products.basket, isLoading: initState.products.isLoading };
+
+    const buildPage = (basketSlice) => {
+        console.log(basketSlice);
         tableNode.innerHTML = productsTableTemplate(basketSlice);
         summaryNode.innerHTML = summaryTemplate(basketSlice);
         initAddRemoveBtsn(tableNode);
+        initCalcBtn(basketSlice);
     };
 
-    buildTable(initBasketState);
+    buildPage(initBasketState);
 
     let prevBasket = initBasketState;
 
     store.subscribe(() => {
-        const currentBasket = store.getState().products.basket;
+        const cuttentState = store.getState();
+        const currentBasket = { ...cuttentState.products.basket, isLoading: cuttentState.products.isLoading };
 
         if (!_.isEqual(currentBasket, prevBasket)) {
-            buildTable(currentBasket);
+            buildPage(currentBasket);
 
             prevBasket = currentBasket;
         }

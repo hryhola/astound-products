@@ -1,6 +1,9 @@
-<div class="card">
+<div class="card {{[helpers/isLoadingClass] isLoading}}">
   <div class="card-body">
     <h5 class="card-title">Total</h5>
+    {{#if ([helpers/hasTotalDiscount] this)}}
+    <p class="summary__totalDiscountText">Discount 20% for orders with products total more than $300!</p>
+    {{/if}}
     <p>Shipping:
       {{#if ([helpers/isEqual] shipping defaultShipping)}}
       <b>${{shipping}}</b>
@@ -8,7 +11,28 @@
       <del class="">${{defaultShipping}}</del><b> ${{shipping}}</b>
       {{/if}}
     </p>
-    <p>TODO: finish block</p>
-    <a href="#" class="btn btn-primary">Calculate taxes</a>
+    <p>Products total:
+      {{#if ([helpers/hasProductWithMoreOneItem] this)}}
+      <del>${{[helpers/totalNoDiscount] this}}</del> <b>${{[helpers/totalItemDiscount] this}}</b>
+      {{else}}
+      ${{[helpers/totalItemDiscount] this}}
+      {{/if}}
+    </p>
+    <p>
+      Total <i>without taxes</i>:
+      {{#if ([helpers/hasTotalDiscount] this)}}
+      <del>${{[helpers/calcShippingAndProducts] this false}}</del>
+      <b >${{[helpers/calcShippingAndProducts] this}}</b>
+      {{else}}
+      <b >${{[helpers/calcShippingAndProducts] this}}</b>
+      {{/if}}
+    </p>
+    {{#if tax}}
+    <p>
+      Tax: <b>${{tax}}</b>
+      <p><b>Total: ${{[helpers/calcFinalTotal] this}}</b></p>
+    </p>
+    {{/if}}
+    <a href="#" id="summary__calc-tax" class="btn btn-primary">Calculate taxes</a>
   </div>
 </div>

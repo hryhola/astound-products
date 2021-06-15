@@ -1,11 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import queryString from "query-string";
-import { calcToalWithoutDiscount } from "./productsUtils";
+import { createSlice } from "@reduxjs/toolkit";
+import { calcAndSetBasketTotalValues } from "./productsUtils";
+import { fetchProducts, fetchRefinements, fetchTax } from "./productsThunks";
 
 const initialState = {
     list: [],
     isLoading: false,
     error: undefined,
+    tax: undefined,
     basket: {
         items: [],
         totalDiscount: 0,
@@ -19,56 +20,6 @@ const initialState = {
         colors: [],
     },
 };
-
-const url = "http://localhost:8089";
-
-export const maxBasketItemsErrorMessage = "5 items max";
-
-export const fetchProducts = createAsyncThunk("products/fetchProducts", async ({ refinement }, { rejectWithValue }) => {
-    let apiUrl = `${url}/api/list`;
-
-    let getParams = {};
-
-    if (refinement) {
-        const { priceFromTo, color, name, size } = refinement;
-
-        getParams = {
-            ...getParams,
-            priceFrom: priceFromTo && priceFromTo[0],
-            priceTo: priceFromTo && priceFromTo[1],
-            name,
-            color: color.filter((c) => c.checked).map((c) => c.value),
-            size: size.filter((s) => s.checked).map((s) => s.value),
-        };
-    }
-
-    const urlWithQuerry = queryString.stringifyUrl({ url: apiUrl, query: getParams }, { arrayFormat: "comma" });
-
-    try {
-        const data = await fetch(urlWithQuerry).then((r) => r.json());
-        if (data.error) rejectWithValue(data.error);
-        else return data;
-    } catch (e) {
-        return rejectWithValue(e.message);
-    }
-});
-
-export const fetchRefinements = createAsyncThunk("products/fetchRefinements", async (options, { rejectWithValue }) => {
-    try {
-        const data = await fetch(`${url}/api/list/refinements`).then((r) => r.json());
-        if (data.error) rejectWithValue(data.error);
-        else return data;
-    } catch (e) {
-        return rejectWithValue(e.message);
-    }
-});
-
-const calcBasketTotal = (state) => {
-    const totalWithoutDiscount = calcToalWithoutDiscount(state.basket);
-
-    state.basket.totalDiscount = totalWithoutDiscount > 300 ? 20 : 0;
-    state.basket.shipping = totalWithoutDiscount > 350 ? 0 : 15;
-}
 
 const productsSlice = createSlice({
     name: "products",
@@ -110,7 +61,7 @@ const productsSlice = createSlice({
                 });
             }
 
-            calcBasketTotal(state);
+            calcAndSetBasketTotalValues(state);
         },
         basketItemIncrement(state, { payload }) {
             const { masterId, variationId } = payload;
@@ -121,7 +72,7 @@ const productsSlice = createSlice({
 
             item.quantity++;
 
-            calcBasketTotal(state);
+            calcAndSetBasketTotalValues(state);
         },
         basketItemDecrement(state, { payload }) {
             const { masterId, variationId } = payload;
@@ -131,15 +82,14 @@ const productsSlice = createSlice({
             if (item.quantity > 1) {
                 item.quantity--;
             }
-            calcBasketTotal(state);
+            calcAndSetBasketTotalValues(state);
         },
         basketItemRemove(state, { payload }) {
             const { masterId, variationId } = payload;
 
-            state.basket.items = state.basket.items
-                .filter(i => !(i.masterId === masterId && i.variationId === variationId));
-            
-            calcBasketTotal(state);
+            state.basket.items = state.basket.items.filter((i) => !(i.masterId === masterId && i.variationId === variationId));
+
+            calcAndSetBasketTotalValues(state);
         },
         setRefinement(state, { payload }) {
             if (!state.refinement) {
@@ -161,6 +111,9 @@ const productsSlice = createSlice({
             const item = state.refinement[field].find((s) => s.value === value);
 
             item.checked = !item.checked;
+        },
+        setTax(state, { payload }) {
+            state.tax = payload;
         },
     },
     extraReducers: {
@@ -209,18 +162,33 @@ const productsSlice = createSlice({
             state.isLoading = false;
             state.error = undefined;
         },
+        [fetchTax.rejected]: (state, { error }) => {
+            state.isLoading = false;
+            state.error = error.message;
+        },
+        [fetchTax.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [fetchTax.fulfilled]: (state, { payload }) => {
+            state.basket.tax = payload.data;
+            state.isLoading = false;
+            state.error = undefined;
+        }
     },
 });
+
+export * from "./productsThunks";
 
 export const { 
     basketItemIncrement, 
     basketItemDecrement, 
-    basketItemRemove,
+    basketItemRemove, 
     selectVariation, 
     addToBasket, 
     setRefinement, 
     toggleRefinementSizeOrColor, 
-    resetRefinement 
+    resetRefinement, 
+    setTax 
 } = productsSlice.actions;
 
 export default productsSlice.reducer;
