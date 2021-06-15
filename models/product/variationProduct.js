@@ -4,6 +4,7 @@ module.exports = function variation(outObj, apiProduct, apiMasterProduct, variat
     decorators.base(outObj, apiProduct, { noId: true });
     decorators.price(outObj, apiProduct);
     decorators.variationAttributes(outObj, apiProduct, apiMasterProduct, variationProps);
+    decorators.description(outObj, apiProduct);
 
     return outObj;
 }

@@ -1,0 +1,1 @@
+export default (master) => master.variations.find(v => v.isSelected)?.pid;

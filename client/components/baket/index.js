@@ -81,7 +81,6 @@ const initBasket = () => {
     const initBasketState = { ...initState.products.basket, isLoading: initState.products.isLoading };
 
     const buildPage = (basketSlice) => {
-        console.log(basketSlice);
         tableNode.innerHTML = productsTableTemplate(basketSlice);
         summaryNode.innerHTML = summaryTemplate(basketSlice);
         initAddRemoveBtsn(tableNode);

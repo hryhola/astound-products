@@ -9,7 +9,7 @@
             {{#if brand}}
             <b class="master-product__brand text-secondary">{{brand}}</b>
             {{/if}}
-            {{name}}
+            <a class="master-product__name-link" href="/product/{{ID}}?pid={{[helpers/getSelectedVariation] this}}">{{name}}</a>
         </h5>
         {{#if available}}
         <div>
@@ -18,7 +18,7 @@
         {{/if}}
         <div class="mt-auto w-100">
             {{#if available}}
-            {{> variants variant=variations }}
+            {{> variants variant=variations maxWidth=true }}
             <a href="#" class="btn btn-primary mt-2 master-product__add-button" data-id={{ID}}>Add to basket</a>
             {{else}}
             <a href="#" class="btn btn-secondary disabled w-100 mt-2">Unavailable now</a>

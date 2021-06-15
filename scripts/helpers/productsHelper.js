@@ -2,11 +2,10 @@ const ProductFactory = require("~/scripts/factories/product");
 const ProductMgr = require("~/scripts/managers/ProductMgr");
 const productsHelper = {};
 
-productsHelper.getProductTile = (pid) => {
-    const apiProduct = ProductMgr.getProduct(pid);
-
-    return ProductFactory.createProduct(apiProduct, pview);
-};
+productsHelper.publicErrors = {
+    invalidMasterIdMessae: "Invalid master id",
+    invalidVariationIdMessae: "Invalid variation id"
+}
 
 productsHelper.getAllGroupedByMaster = () => {
     const onlyMasterProductes = ProductMgr.getAllMasterProductes();
@@ -59,11 +58,47 @@ productsHelper.getCertainProducts = ({ refinements }) => {
         }
     }
 
-    const createdMasterProducts = masterProducts.map((m) => ProductFactory.createMasterProduct(m, variationProducts));
+    const createdMasterProducts = masterProducts.map((m) => ProductFactory.createMasterProduct(m, { apiVariations: variationProducts }));
 
     const productsWithVariations = createdMasterProducts.filter((m) => m.variations.length > 0);
 
     return productsWithVariations;
 };
+
+productsHelper.getMasterProduct = (masterId, variationIdForFullInfo) => {
+    const apiMasterProduct = ProductMgr.getProduct(masterId);
+
+    if(!apiMasterProduct) throw new Error(productsHelper.publicErrors.invalidMasterIdMessae);
+    
+    const master = ProductFactory.createMasterProduct(apiMasterProduct);
+    
+    if(variationIdForFullInfo) {
+        const apiVariationProduct = ProductMgr.getProduct(variationIdForFullInfo);
+
+        if (!apiVariationProduct) return master;
+
+        const variation = ProductFactory.createVariation(apiVariationProduct, apiMasterProduct);
+
+        let variationIndex = master.variations.findIndex(v => v.pid === variationIdForFullInfo);
+
+        master.variations[variationIndex] = variation;
+    }
+
+    return master;
+}
+
+productsHelper.getVariation = (masterId, variationId) => {
+    const apiMasterProduct = ProductMgr.getProduct(masterId);
+    
+    if(!apiMasterProduct) throw new Error(productsHelper.publicErrors.invalidMasterIdMessae);
+
+    const apiVariationProduct = ProductMgr.getProduct(variationId);
+
+    if(!apiVariationProduct) throw new Error(productsHelper.publicErrors.invalidVariationIdMessae);
+
+    const variation = ProductFactory.createVariation(apiVariationProduct, apiMasterProduct);
+
+    return variation;
+}
 
 module.exports = productsHelper;

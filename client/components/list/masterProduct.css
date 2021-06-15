@@ -24,3 +24,7 @@
 .master-product__add-button {
     width: 100%;
 }
+
+.master-product__name-link  {
+    text-decoration: none;
+}

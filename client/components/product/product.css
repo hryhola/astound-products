@@ -1,0 +1,18 @@
+.product__image-container {
+    min-width: 600px;
+    min-height: 600px;
+}
+.product__image-container--empty {
+    background-color: #eee;
+}
+
+.product__image {
+    max-width: 600px;
+    max-height: 600px;
+}
+
+@media (max-width: 1000px) {
+    .product__main {
+        flex-wrap: wrap;
+    }
+}

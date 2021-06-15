@@ -57,3 +57,16 @@ export const fetchTax = createAsyncThunk("products/fetchTax", async ({ amount },
         return rejectWithValue(e.message);
     }
 });
+
+export const fetchMasterProduct = createAsyncThunk("products/fetchMasterProduct", async ({ masterId, variationId }, { rejectWithValue }) => { 
+    const apiUrl = `${url}/api/product/${masterId}`;
+    const urlWithParams = queryString.stringifyUrl({ url: apiUrl, query: { pid: variationId } });
+    
+    try {
+        const data = await fetch(urlWithParams).then((r) => r.json());
+        if (data.error) rejectWithValue(data.error);
+        else return data.data;
+    } catch (e) {
+        return rejectWithValue(e.message);
+    }
+});

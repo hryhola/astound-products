@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { calcAndSetBasketTotalValues } from "./productsUtils";
-import { fetchProducts, fetchRefinements, fetchTax } from "./productsThunks";
+import { fetchProducts, fetchRefinements, fetchTax, fetchMasterProduct } from "./productsThunks";
 
 const initialState = {
     list: [],
@@ -171,6 +171,21 @@ const productsSlice = createSlice({
         },
         [fetchTax.fulfilled]: (state, { payload }) => {
             state.basket.tax = payload.data;
+            state.isLoading = false;
+            state.error = undefined;
+        },
+        [fetchMasterProduct.rejected]: (state, { error }) => {
+            state.isLoading = false;
+            state.error = error.message;
+        },
+        [fetchMasterProduct.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [fetchMasterProduct.fulfilled]: (state, { payload, meta }) => {
+            const { variationId } = meta.arg;
+            const selected = payload.variations.find(v => v.pid === variationId);
+            selected.isSelected = true;
+            state.list.push(payload);
             state.isLoading = false;
             state.error = undefined;
         }

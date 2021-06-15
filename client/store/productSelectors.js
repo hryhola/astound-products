@@ -7,3 +7,16 @@ export const selectBasketItemQuantity = (productsSlice, { masterId, variantId })
 
     return item ? item.quantity : undefined;
 };
+
+export const selectProductPageInfo = (state) => {
+    let product = state.products.list[0];
+    if(product) {
+        const variation = product.variations.find(v => v.isSelected);
+        product = { ...product, ...variation };
+        product.variations = product.variations.map(v => ({...v, master: product.ID}))
+    }
+    return {
+        isLoading: state.products.isLoading,
+        product,
+    };
+};
