@@ -66,7 +66,7 @@ const initAddRemoveBtsn = (tableNode) => {
 const initCalcBtn = (basketSlice) => {
     const calcTaxBtn = document.getElementById("summary__calc-tax");
 
-    calcTaxBtn.addEventListener("click", (e) => {
+    calcTaxBtn && calcTaxBtn.addEventListener("click", (e) => {
         e.preventDefault();
         store.dispatch(fetchTax({ amount: calcTotalWithoutTax(basketSlice) }));
     });

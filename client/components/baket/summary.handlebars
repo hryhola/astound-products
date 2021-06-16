@@ -1,3 +1,4 @@
+{{#if ([helpers/hasBasketItems] items)}}
 <div class="card {{[helpers/isLoadingClass] isLoading}}">
   <div class="card-body">
     <h5 class="card-title">Total</h5>
@@ -36,3 +37,4 @@
     <a href="#" id="summary__calc-tax" class="btn btn-primary">Calculate taxes</a>
   </div>
 </div>
+{{/if}}
