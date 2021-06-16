@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { store } from "../../store";
-import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage, changePage } from "../../store/productsSlice";
+import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage, changePage, changePerPage } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
@@ -9,6 +9,7 @@ import errorAddModalTemplate from "./modals/errorAdd.handlebars";
 import noItemsTemplate from "./noItems.handlebars";
 
 import "./masterProduct.css";
+import "./filters.css";
 
 const handleSelectSize = (e) => {
     const variationId = e.target.dataset.pid;
@@ -42,7 +43,7 @@ const handleNextPage = () => store.dispatch(changePage("next"));
 const handlePrevPage = () => store.dispatch(changePage("prev"));
 const handleLastPage = () => store.dispatch(changePage("last"));
 const handleFirstPage = () => store.dispatch(changePage("first"));
-
+const handlePerPage = ({ target }) => store.dispatch(changePerPage(+target.value));
 
 export const setButtonHandlers = (handleVariationSelect) => {
     const masterProducts = document.getElementsByClassName("master-product");
@@ -50,6 +51,7 @@ export const setButtonHandlers = (handleVariationSelect) => {
     const prevBtns = document.querySelectorAll("[data-role='pagination-prev']");
     const lastBtn = document.querySelector("[data-role='pagination-last']");
     const firstBtn = document.querySelector("[data-role='pagination-first']");
+    const perPageBtn = document.getElementById("per-page-select");
 
     [...masterProducts].forEach((master) => {
         const variantBtn = master.getElementsByClassName("master-product__select-variant");
@@ -73,6 +75,7 @@ export const setButtonHandlers = (handleVariationSelect) => {
 
     lastBtn && lastBtn.addEventListener("click", handleLastPage);
     firstBtn && firstBtn.addEventListener("click", handleFirstPage);
+    perPageBtn && perPageBtn.addEventListener("change", handlePerPage);
 };
 
 const handleProductsLoad = () => {

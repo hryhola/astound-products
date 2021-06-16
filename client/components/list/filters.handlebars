@@ -1,0 +1,15 @@
+<div class="d-flex justify-content-center align-items-baseline mt-2 mb-2">
+    <label for="per-page-select" class="form-label filters__label">Products per page</label>
+    <select id="per-page-select" class="form-select form-select-sm filter__select">
+        <option value="3" {{#if ([helpers/isEqual] perPage 3)}}selected{{/if}}>3</option>
+        <option value="6" {{#if ([helpers/isEqual] perPage 6)}}selected{{/if}}>6</option>
+        <option value="12" {{#if ([helpers/isEqual] perPage 12)}}selected{{/if}}>12</option>
+    </select>
+
+    {{!-- <label for="persort-by-select" class="form-label filters__label">Sort by</label>
+    <select id="sort-by-select" class="form-select form-select-sm filter__select">
+        <option value="none">None</option>
+        <option value="price">Price</option>
+        <option value="price-reverse">Price reverse</option>
+    </select> --}}
+</div>

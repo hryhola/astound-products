@@ -32,6 +32,9 @@ const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
+        setPerPage(state, { payload }) {
+            state.pagination.perPage = payload;
+        },
         setCurrentPage(state, { payload }) {
             if (payload === "next") {
                 state.pagination.currentPage++;
@@ -240,7 +243,7 @@ const productsSlice = createSlice({
 
 export * from "./productsThunks";
 
-export const { setCurrentPage, basketItemIncrement, basketItemDecrement, basketItemRemove, selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement, setTax } =
+export const { setPerPage, setCurrentPage, basketItemIncrement, basketItemDecrement, basketItemRemove, selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement, setTax } =
     productsSlice.actions;
 
 export default productsSlice.reducer;

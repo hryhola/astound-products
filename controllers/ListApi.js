@@ -9,7 +9,7 @@ server.get("/api/list", function (req, res) {
         const data = productsHelper.getAllGroupedByMaster();
         res.json({ data });
     } else {
-        const { name, priceFrom, priceTo, color, size, perPage, page } = req.query;
+        const { name, priceFrom, priceTo, color, size, perPage, page, sortBy } = req.query;
 
         let data = productsHelper.getCertainProducts({
             refinements: {
@@ -20,6 +20,8 @@ server.get("/api/list", function (req, res) {
                 size: size && size.split(",")
             }
         });
+
+        // if (sortBy) pageHelper.sortBy(data, sortBy);
 
         const { page: pageData, totalPages } = pageHelper.pagination(data, perPage, page)
 

@@ -1,0 +1,1 @@
+export default (v, q) => v === q;

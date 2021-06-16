@@ -52,6 +52,12 @@ productsHelper.applyRefinements = (productsData, refinements) => {
     return products;
 };
 
+// productsHelper.sortBy = (productsData, sortBy) => {
+//     switch (sortBy) {
+//         case "price": return [].sort(p => )
+//     }
+// }
+
 productsHelper.getCertainProducts = ({ refinements }) => {
     const allProducts = ProductMgr.getAllProductes();
     let products = [...allProducts];
