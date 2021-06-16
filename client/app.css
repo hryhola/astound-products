@@ -4,3 +4,11 @@
 .irs--flat .irs-from:before, .irs--flat .irs-to:before, .irs--flat .irs-single:before {
     border-top-color: var(--bs-blue)!important
 }
+
+body {
+    margin-top: 60px;
+}
+
+.spinner-border {
+    margin-top: 90px;
+}

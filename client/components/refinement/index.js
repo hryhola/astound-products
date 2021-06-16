@@ -6,6 +6,8 @@ import { initNameField } from "./fields/productName";
 import { handleSizeAndColorClick } from "./fields/sizeAndColor";
 import { fetchProducts, resetRefinement } from "../../store/productsSlice";
 
+import "./reminement.css";
+
 export const setRefinements = (productsSlice) => {
     const [min, max] = productsSlice.refinement.priceMinMax;
 
