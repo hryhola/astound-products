@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { calcAndSetBasketTotalValues } from "./productsUtils";
-import { fetchProducts, fetchRefinements, fetchTax, fetchMasterProduct } from "./productsThunks";
+import { fetchProducts, fetchRefinements, fetchTax, fetchMasterProduct, fetchVariation } from "./productsThunks";
+
+export const maxBasketItemsErrorMessage = "5 items max";
 
 const initialState = {
     list: [],
@@ -183,27 +185,42 @@ const productsSlice = createSlice({
         },
         [fetchMasterProduct.fulfilled]: (state, { payload, meta }) => {
             const { variationId } = meta.arg;
-            const selected = payload.variations.find(v => v.pid === variationId);
+            const selected = payload.variations.find((v) => v.pid === variationId);
             selected.isSelected = true;
             state.list.push(payload);
             state.isLoading = false;
             state.error = undefined;
-        }
+        },
+        [fetchVariation.rejected]: (state, { error }) => {
+            state.isLoading = false;
+            state.error = error.message;
+        },
+        [fetchVariation.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [fetchVariation.fulfilled]: (state, { payload, meta }) => {
+            const { variationId, masterId } = meta.arg;
+
+            const master = state.list.find((i) => i.ID === masterId);
+
+            if (master) {
+                const variationIndex = master.variations.findIndex((v) => v.pid === variationId);
+
+                if (variationId === -1) {
+                    master.variations.push(payload);
+                } else {
+                    master.variations[variationIndex] = { ...master.variations[variationIndex], ...payload };
+                }
+            }
+
+            state.isLoading = false;
+            state.error = undefined;
+        },
     },
 });
 
 export * from "./productsThunks";
 
-export const { 
-    basketItemIncrement, 
-    basketItemDecrement, 
-    basketItemRemove, 
-    selectVariation, 
-    addToBasket, 
-    setRefinement, 
-    toggleRefinementSizeOrColor, 
-    resetRefinement, 
-    setTax 
-} = productsSlice.actions;
+export const { basketItemIncrement, basketItemDecrement, basketItemRemove, selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement, setTax } = productsSlice.actions;
 
 export default productsSlice.reducer;

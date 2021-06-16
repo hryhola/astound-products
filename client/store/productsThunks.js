@@ -4,8 +4,6 @@ import queryString from "query-string";
 
 const url = `http://${process.env.APP_HOST}:${process.env.APP_PORT}`;
 
-export const maxBasketItemsErrorMessage = "5 items max";
-
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async ({ refinement }, { rejectWithValue }) => {
     let apiUrl = `${url}/api/list`;
 
@@ -64,6 +62,17 @@ export const fetchMasterProduct = createAsyncThunk("products/fetchMasterProduct"
     
     try {
         const data = await fetch(urlWithParams).then((r) => r.json());
+        if (data.error) rejectWithValue(data.error);
+        else return data.data;
+    } catch (e) {
+        return rejectWithValue(e.message);
+    }
+});
+
+export const fetchVariation = createAsyncThunk("products/fetchVariation", async ({ masterId, variationId }, { rejectWithValue }) => { 
+    const apiUrl = `${url}/api/variation/${masterId}/${variationId}`;
+    try {
+        const data = await fetch(apiUrl).then((r) => r.json());
         if (data.error) rejectWithValue(data.error);
         else return data.data;
     } catch (e) {

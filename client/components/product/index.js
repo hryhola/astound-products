@@ -1,12 +1,22 @@
 import _ from "lodash";
 import queryString from "query-string";
 import { store } from "../../store";
-import { fetchMasterProduct } from "../../store/productsThunks";
+import { fetchMasterProduct, fetchVariation } from "../../store/productsThunks";
 import { selectProductPageInfo } from "../../store/productSelectors";
+import { setButtonHandlers } from "../list";
 
-import productPageTemplae from "./product.handlebars";
+import productPageTemplate from "./product.handlebars";
+import errorAddModalTemplate from "../list/modals/errorAdd.handlebars";
+import successAddModalTemplate from "../list/modals/successAdd.handlebars";
 
 import "./product.css";
+
+const handleVariationSelect = (e) => {
+    const variationId = e.target.dataset.pid;
+    const masterId = e.target.dataset.master;
+
+    store.dispatch(fetchVariation({ masterId, variationId }));
+}
 
 const initPage = () => {
     const pageNode = document.getElementById("product-page");
@@ -14,13 +24,15 @@ const initPage = () => {
     const initState = store.getState();
 
     const build = (state) => {
-        pageNode.innerHTML = productPageTemplae(state);
+        pageNode.innerHTML = productPageTemplate(state);
 
-        if(state.product && state.product.longDescription) {
+        if (state.product && state.product.longDescription) {
             const descNode = document.getElementById("description-text");
-            descNode.innerHTML = state.product.longDescription
+            descNode.innerHTML = state.product.longDescription;
         }
-    }
+
+        setButtonHandlers(handleVariationSelect);
+    };
 
     let prevState = selectProductPageInfo(initState);
 
@@ -28,7 +40,7 @@ const initPage = () => {
 
     store.subscribe(() => {
         const currState = selectProductPageInfo(store.getState());
-        console.log(currState)
+        setButtonHandlers();
         if (!_.isEqual(prevState, currState)) {
             build(currState);
 
@@ -43,6 +55,14 @@ window.location.pathname.includes("/product/") &&
         const variationId = queryString.parseUrl(window.location.href).query.pid;
 
         initPage(masterId, variationId);
+
+        const successElement = document.createElement("div");
+        successElement.innerHTML = successAddModalTemplate();
+        const errorElement = document.createElement("div");
+        errorElement.innerHTML = errorAddModalTemplate();
+
+        document.body.appendChild(successElement);
+        document.body.appendChild(errorElement);
 
         store.dispatch(fetchMasterProduct({ masterId, variationId }));
     });

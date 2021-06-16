@@ -19,6 +19,7 @@ const handleSelectSize = (e) => {
 const handleAdd = (e) => {
     e.preventDefault();
     const masterId = e.target.dataset.id;
+
     try {
         store.dispatch(addToBasket(masterId));
         const afterAddModal = getAfterAddModal();
@@ -37,7 +38,7 @@ const handleAdd = (e) => {
     }
 };
 
-const setButtonHandlers = () => {
+export const setButtonHandlers = (handleVariationSelect) => {
     const masterProducts = document.getElementsByClassName("master-product");
 
     [...masterProducts].forEach((master) => {
@@ -46,7 +47,10 @@ const setButtonHandlers = () => {
 
         addBtn[0] && addBtn[0].addEventListener("click", handleAdd);
 
-        [...variantBtn].forEach((v) => v.addEventListener("click", handleSelectSize));
+        [...variantBtn].forEach((v) => v.addEventListener("click", (e) => {
+            handleVariationSelect(e);
+            handleSelectSize(e);
+        }));
     });
 };
 
@@ -90,4 +94,4 @@ window.location.pathname === "/list" &&
         document.body.innerHTML += errorAddModalTemplate();
 
         store.dispatch(fetchRefinements());
-    });
+    }); 

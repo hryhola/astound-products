@@ -6,7 +6,7 @@ server.get("/product/:id", function (req, res) {
     
     const product = productsMgr.getProduct(req.params.id);
 
-    if (!product) res.render("productDoNotExist");
+    if (!product || product.variations.length === 0) res.render("productDoNotExist");
     else res.render("product");
 });
 
