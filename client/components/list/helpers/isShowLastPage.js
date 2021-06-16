@@ -1,0 +1,1 @@
+export default ({ currentPage, totalPages }) => currentPage < totalPages - 1;

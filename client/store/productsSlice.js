@@ -6,6 +6,11 @@ export const maxBasketItemsErrorMessage = "5 items max";
 
 const initialState = {
     list: [],
+    pagination: {
+        currentPage: 1,
+        totalPages: 1,
+        perPage: 6,
+    },
     isLoading: false,
     error: undefined,
     tax: undefined,
@@ -27,6 +32,19 @@ const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
+        setCurrentPage(state, { payload }) {
+            if (payload === "next") {
+                state.pagination.currentPage++;
+            } else if (payload === "prev") {
+                state.pagination.currentPage--;
+            } else if (payload === "last") {
+                state.pagination.currentPage = state.pagination.totalPages;
+            } else if (payload === "first") {
+                state.pagination.currentPage = 1;
+            } else {
+                state.pagination.currentPage = payload;
+            }
+        },
         selectVariation(state, { payload }) {
             const { masterId, variationId } = payload;
 
@@ -135,6 +153,7 @@ const productsSlice = createSlice({
                     variations,
                 };
             });
+            state.pagination.totalPages = payload.totalPages;
             state.isLoading = false;
             state.error = undefined;
         },
@@ -221,6 +240,7 @@ const productsSlice = createSlice({
 
 export * from "./productsThunks";
 
-export const { basketItemIncrement, basketItemDecrement, basketItemRemove, selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement, setTax } = productsSlice.actions;
+export const { setCurrentPage, basketItemIncrement, basketItemDecrement, basketItemRemove, selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement, setTax } =
+    productsSlice.actions;
 
 export default productsSlice.reducer;

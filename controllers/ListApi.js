@@ -1,4 +1,5 @@
 const productsHelper = require("~/scripts/helpers/productsHelper");
+const pageHelper = require("~/scripts/helpers/pageHelper");
 const server = require("express")();
 
 server.get("/api/list", function (req, res) {
@@ -8,19 +9,21 @@ server.get("/api/list", function (req, res) {
         const data = productsHelper.getAllGroupedByMaster();
         res.json({ data });
     } else {
-        const refinements = {
-            name: req.query.name,
-            priceFrom: parseInt(req.query.priceFrom),
-            priceTo: parseInt(req.query.priceTo),
-            color: req.query.color && req.query.color.split(","),
-            size: req.query.size && req.query.size.split(",")
-        };
-        
-        const data = productsHelper.getCertainProducts({
-            refinements
+        const { name, priceFrom, priceTo, color, size, perPage, page } = req.query;
+
+        let data = productsHelper.getCertainProducts({
+            refinements: {
+                name,
+                priceFrom: parseInt(priceFrom),
+                priceTo: parseInt(priceTo),
+                color: color && color.split(","),
+                size: size && size.split(",")
+            }
         });
 
-        res.json({ data });
+        const { page: pageData, totalPages } = pageHelper.pagination(data, perPage, page)
+
+        res.json({ data: pageData, totalPages });
     }
 });
 

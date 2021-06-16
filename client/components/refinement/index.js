@@ -44,9 +44,7 @@ const initRefinemant = () => {
             setRefinements(state.products);
             handleSizeAndColorClick();
 
-            store.dispatch(fetchProducts({
-                refinement: currentRefinement
-            }))
+            store.dispatch(fetchProducts())
         }
     });
 };

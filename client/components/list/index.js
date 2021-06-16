@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { store } from "../../store";
-import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage } from "../../store/productsSlice";
+import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage, changePage } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
@@ -38,8 +38,18 @@ const handleAdd = (e) => {
     }
 };
 
+const handleNextPage = () => store.dispatch(changePage("next"));
+const handlePrevPage = () => store.dispatch(changePage("prev"));
+const handleLastPage = () => store.dispatch(changePage("last"));
+const handleFirstPage = () => store.dispatch(changePage("first"));
+
+
 export const setButtonHandlers = (handleVariationSelect) => {
     const masterProducts = document.getElementsByClassName("master-product");
+    const nextBts = document.querySelectorAll("[data-role='pagination-next']");
+    const prevBtns = document.querySelectorAll("[data-role='pagination-prev']");
+    const lastBtn = document.querySelector("[data-role='pagination-last']");
+    const firstBtn = document.querySelector("[data-role='pagination-first']");
 
     [...masterProducts].forEach((master) => {
         const variantBtn = master.getElementsByClassName("master-product__select-variant");
@@ -52,13 +62,25 @@ export const setButtonHandlers = (handleVariationSelect) => {
             handleSelectSize(e);
         }));
     });
+
+    nextBts && [...nextBts].forEach(next => {
+        next.addEventListener("click", handleNextPage);
+    })
+    
+    prevBtns && [...prevBtns].forEach(prev => {
+        prev.addEventListener("click", handlePrevPage);
+    })
+
+    lastBtn && lastBtn.addEventListener("click", handleLastPage);
+    firstBtn && firstBtn.addEventListener("click", handleFirstPage);
 };
 
 const handleProductsLoad = () => {
-    let prevList = [];
+    let prevState = [];
 
     store.subscribe(() => {
         const { products } = store.getState();
+
 
         const list = document.getElementById("list");
         const spinner = document.getElementById("list-spinner");
@@ -70,13 +92,15 @@ const handleProductsLoad = () => {
             spinner.classList.add("d-none");
             list.classList.remove("d-none");
 
-            if (!_.isEqual(prevList, products.list)) {
-                prevList = products.list;
+            const currState = [products.list, products.pagination];
+
+            if (!_.isEqual(prevState, currState)) {
+                prevState = currState;
 
                 const listData = document.getElementById("list-data");
 
-                if(products.list && products.list.length > 0) {
-                    listData.innerHTML = buildList(products.list);
+                if (products.list && products.list.length > 0) {
+                    listData.innerHTML = buildList(products.list, products.pagination);
                 } else {
                     listData.innerHTML = noItemsTemplate();
                 }

@@ -1,0 +1,65 @@
+<nav id="list-pagination">
+    <ul class="pagination">
+        <li data-role="pagination-prev" class="page-item {{#if ([helpers/pagination] "prev" this)}}{{else}}disabled{{/if}}">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        {{#if ([helpers/isShowFirstPage] this)}}
+        <li data-role="pagination-first" class="page-item">
+            <a class="page-link" href="#">
+                1
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                ...
+            </a>
+        </li>
+        {{/if}}
+
+        {{#if ([helpers/pagination] "prev" this)}}
+        <li data-role="pagination-prev" class="page-item">
+            <a class="page-link" href="#">
+                {{[helpers/pagination] "prev" this}}
+            </a>
+        </li>
+        {{/if}}
+
+
+        <li class="page-item active">
+            <a class="page-link" href="#">
+                {{currentPage}}
+            </a>
+        </li>
+
+
+        {{#if ([helpers/pagination] "next" this)}}
+        <li data-role="pagination-next" class="page-item">
+            <a class="page-link" href="#">
+                {{[helpers/pagination] "next" this}}
+            </a>
+        </li>
+        {{/if}}
+
+        {{#if ([helpers/isShowLastPage] this)}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                ...
+            </a>
+        </li>
+        <li data-role="pagination-last" class="page-item">
+            <a class="page-link" href="#">
+                {{totalPages}}
+            </a>
+        </li>
+        {{/if}}
+
+        <li data-role="pagination-next" class="page-item {{#if ([helpers/pagination] "next" this)}}{{else}}disabled{{/if}}">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

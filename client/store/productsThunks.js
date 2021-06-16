@@ -2,12 +2,39 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import queryString from "query-string";
 
+import { setCurrentPage } from "./productsSlice";
+
 const url = `http://${process.env.APP_HOST}:${process.env.APP_PORT}`;
 
-export const fetchProducts = createAsyncThunk("products/fetchProducts", async ({ refinement }, { rejectWithValue }) => {
+export const changePage = createAsyncThunk("products/changePage", async (page, { dispatch, getState }) => {
+    const { pagination } = getState().products;
+    const { currentPage, totalPages } = pagination;
+    
+    const isValidRequest =
+        (typeof page === "number" && (page >= 1 || page <= totalPages)) ||
+        (page === "next" && currentPage < totalPages) ||
+        (page === "prev" && currentPage > 1) ||
+        (page === "last") ||
+        (page === "first");
+
+    if (isValidRequest) {
+        dispatch(setCurrentPage(page));
+        dispatch(fetchProducts());
+    }
+
+});
+
+export const fetchProducts = createAsyncThunk("products/fetchProducts", async (_, { rejectWithValue, getState }) => {
+    const { products } = getState();
+    const { currentPage, perPage } = products.pagination;
+    const { refinement } = products;
+
     let apiUrl = `${url}/api/list`;
 
-    let getParams = {};
+    let getParams = {
+        page: currentPage,
+        perPage,
+    };
 
     if (refinement) {
         const { priceFromTo, color, name, size } = refinement;

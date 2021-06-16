@@ -1,11 +1,12 @@
 const ProductFactory = require("~/scripts/factories/product");
 const ProductMgr = require("~/scripts/managers/ProductMgr");
+const pageHelper = require("./pageHelper");
 const productsHelper = {};
 
 productsHelper.publicErrors = {
     invalidMasterIdMessae: "Invalid master id",
-    invalidVariationIdMessae: "Invalid variation id"
-}
+    invalidVariationIdMessae: "Invalid variation id",
+};
 
 productsHelper.getAllGroupedByMaster = () => {
     const onlyMasterProductes = ProductMgr.getAllMasterProductes();
@@ -25,33 +26,39 @@ productsHelper.getRefinements = () => {
     };
 };
 
+productsHelper.applyRefinements = (productsData, refinements) => {
+    const { name, priceFrom, priceTo, color, size } = refinements;
+    let products = [...productsData];
+
+    if (name) products = products.filter((p) => p.name.toLowerCase().includes(name.toLowerCase()));
+    if (priceFrom) products = products.filter((p) => p.price >= priceFrom);
+    if (priceTo) products = products.filter((p) => p.price <= priceTo);
+
+    if ((color && color.length) || (size && size.length))
+        products = products.filter((p) => {
+            let isValid = false;
+
+            if (color && color.length) {
+                isValid = isValid || color.includes(p.custom.color);
+            }
+
+            if (size && size.length) {
+                isValid = isValid || size.includes(p.custom.size);
+            }
+
+            return isValid;
+        });
+
+    return products;
+};
+
 productsHelper.getCertainProducts = ({ refinements }) => {
     const allProducts = ProductMgr.getAllProductes();
     let products = [...allProducts];
 
     if (refinements) {
-        const { name, priceFrom, priceTo, color, size } = refinements;
-
-        if (name) products = products.filter((p) => p.name.toLowerCase().includes(name.toLowerCase()));
-        if (priceFrom) products = products.filter((p) => p.price >= priceFrom);
-        if (priceTo) products = products.filter((p) => p.price <= priceTo);
-
-        if ((color && color.length) || (size && size.length)) 
-            products = products
-                .filter((p) => {
-                    let isValid = false;
-
-                    if (color && color.length) {
-                        isValid = isValid || color.includes(p.custom.color);
-                    } 
-
-                    if (size && size.length) {
-                        isValid = isValid || size.includes(p.custom.size);
-                    }
-
-                    return isValid;
-                });
-            }
+        products = productsHelper.applyRefinements(products, refinements);
+    }
 
     const variationProducts = products.filter((p) => !p.isMaster);
 
@@ -82,37 +89,37 @@ productsHelper.getCertainProducts = ({ refinements }) => {
 productsHelper.getMasterProduct = (masterId, variationIdForFullInfo) => {
     const apiMasterProduct = ProductMgr.getProduct(masterId);
 
-    if(!apiMasterProduct) throw new Error(productsHelper.publicErrors.invalidMasterIdMessae);
-    
+    if (!apiMasterProduct) throw new Error(productsHelper.publicErrors.invalidMasterIdMessae);
+
     const master = ProductFactory.createMasterProduct(apiMasterProduct);
-    
-    if(variationIdForFullInfo) {
+
+    if (variationIdForFullInfo) {
         const apiVariationProduct = ProductMgr.getProduct(variationIdForFullInfo);
 
         if (!apiVariationProduct) return master;
 
         const variation = ProductFactory.createVariation(apiVariationProduct, apiMasterProduct);
 
-        let variationIndex = master.variations.findIndex(v => v.pid === variationIdForFullInfo);
+        let variationIndex = master.variations.findIndex((v) => v.pid === variationIdForFullInfo);
 
         master.variations[variationIndex] = variation;
     }
 
     return master;
-}
+};
 
 productsHelper.getVariation = (masterId, variationId) => {
     const apiMasterProduct = ProductMgr.getProduct(masterId);
-    
-    if(!apiMasterProduct) throw new Error(productsHelper.publicErrors.invalidMasterIdMessae);
+
+    if (!apiMasterProduct) throw new Error(productsHelper.publicErrors.invalidMasterIdMessae);
 
     const apiVariationProduct = ProductMgr.getProduct(variationId);
 
-    if(!apiVariationProduct) throw new Error(productsHelper.publicErrors.invalidVariationIdMessae);
+    if (!apiVariationProduct) throw new Error(productsHelper.publicErrors.invalidVariationIdMessae);
 
     const variation = ProductFactory.createVariation(apiVariationProduct, apiMasterProduct);
 
     return variation;
-}
+};
 
 module.exports = productsHelper;
