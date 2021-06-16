@@ -48,7 +48,7 @@ export const setButtonHandlers = (handleVariationSelect) => {
         addBtn[0] && addBtn[0].addEventListener("click", handleAdd);
 
         [...variantBtn].forEach((v) => v.addEventListener("click", (e) => {
-            handleVariationSelect(e);
+            handleVariationSelect && handleVariationSelect(e);
             handleSelectSize(e);
         }));
     });

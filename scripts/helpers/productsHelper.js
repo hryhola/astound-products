@@ -35,9 +35,23 @@ productsHelper.getCertainProducts = ({ refinements }) => {
         if (name) products = products.filter((p) => p.name.toLowerCase().includes(name.toLowerCase()));
         if (priceFrom) products = products.filter((p) => p.price >= priceFrom);
         if (priceTo) products = products.filter((p) => p.price <= priceTo);
-        if (color && color.length) products = products.filter((p) => color.includes(p.custom.color));
-        if (size && size.length) products = products.filter((p) => size.includes(p.custom.size));
-    }
+
+        if ((color && color.length) || (size && size.length)) 
+            products = products
+                .filter((p) => {
+                    let isValid = false;
+
+                    if (color && color.length) {
+                        isValid = isValid || color.includes(p.custom.color);
+                    } 
+
+                    if (size && size.length) {
+                        isValid = isValid || size.includes(p.custom.size);
+                    }
+
+                    return isValid;
+                });
+            }
 
     const variationProducts = products.filter((p) => !p.isMaster);
 
