@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { store } from "../../store";
-import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage, changePage, changePerPage } from "../../store/productsSlice";
+import { selectVariation, addToBasket, fetchRefinements, maxBasketItemsErrorMessage, changePage, changePerPage, changeSoryBy } from "../../store/productsSlice";
 import { getAfterAddModal, getErrorAddModal } from "./modals";
 import { buildList } from "./list.utils";
 
@@ -44,6 +44,7 @@ const handlePrevPage = () => store.dispatch(changePage("prev"));
 const handleLastPage = () => store.dispatch(changePage("last"));
 const handleFirstPage = () => store.dispatch(changePage("first"));
 const handlePerPage = ({ target }) => store.dispatch(changePerPage(+target.value));
+const handleSortBy = ({ target }) => store.dispatch(changeSoryBy(target.value));
 
 export const setButtonHandlers = (handleVariationSelect) => {
     const masterProducts = document.getElementsByClassName("master-product");
@@ -51,7 +52,8 @@ export const setButtonHandlers = (handleVariationSelect) => {
     const prevBtns = document.querySelectorAll("[data-role='pagination-prev']");
     const lastBtn = document.querySelector("[data-role='pagination-last']");
     const firstBtn = document.querySelector("[data-role='pagination-first']");
-    const perPageBtn = document.getElementById("per-page-select");
+    const perPageSelect = document.getElementById("per-page-select");
+    const sortBySelect = document.getElementById("sort-by-select");
 
     [...masterProducts].forEach((master) => {
         const variantBtn = master.getElementsByClassName("master-product__select-variant");
@@ -75,7 +77,8 @@ export const setButtonHandlers = (handleVariationSelect) => {
 
     lastBtn && lastBtn.addEventListener("click", handleLastPage);
     firstBtn && firstBtn.addEventListener("click", handleFirstPage);
-    perPageBtn && perPageBtn.addEventListener("change", handlePerPage);
+    perPageSelect && perPageSelect.addEventListener("change", handlePerPage);
+    sortBySelect && sortBySelect.addEventListener("change", handleSortBy);
 };
 
 const handleProductsLoad = () => {

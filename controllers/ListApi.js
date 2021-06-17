@@ -21,9 +21,9 @@ server.get("/api/list", function (req, res) {
             }
         });
 
-        // if (sortBy) pageHelper.sortBy(data, sortBy);
+        if (sortBy) productsHelper.sortBy(data, sortBy);
 
-        const { page: pageData, totalPages } = pageHelper.pagination(data, perPage, page)
+        const { page: pageData, totalPages } = pageHelper.pagination(data, perPage, page);
 
         res.json({ data: pageData, totalPages });
     }

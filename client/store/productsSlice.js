@@ -10,6 +10,7 @@ const initialState = {
         currentPage: 1,
         totalPages: 1,
         perPage: 6,
+        sortBy: "none",
     },
     isLoading: false,
     error: undefined,
@@ -32,6 +33,9 @@ const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
+        setSortBy(state, { payload }) {
+            state.pagination.sortBy = payload;
+        },
         setPerPage(state, { payload }) {
             state.pagination.perPage = payload;
         },
@@ -243,7 +247,19 @@ const productsSlice = createSlice({
 
 export * from "./productsThunks";
 
-export const { setPerPage, setCurrentPage, basketItemIncrement, basketItemDecrement, basketItemRemove, selectVariation, addToBasket, setRefinement, toggleRefinementSizeOrColor, resetRefinement, setTax } =
-    productsSlice.actions;
+export const {
+    setSortBy,
+    setPerPage,
+    setCurrentPage,
+    basketItemIncrement,
+    basketItemDecrement,
+    basketItemRemove,
+    selectVariation,
+    addToBasket,
+    setRefinement,
+    toggleRefinementSizeOrColor,
+    resetRefinement,
+    setTax,
+} = productsSlice.actions;
 
 export default productsSlice.reducer;

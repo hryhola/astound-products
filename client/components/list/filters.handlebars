@@ -6,10 +6,12 @@
         <option value="12" {{#if ([helpers/isEqual] perPage 12)}}selected{{/if}}>12</option>
     </select>
 
-    {{!-- <label for="persort-by-select" class="form-label filters__label">Sort by</label>
+    <label for="sort-by-select" class="form-label filters__label">Sort by</label>
     <select id="sort-by-select" class="form-select form-select-sm filter__select">
-        <option value="none">None</option>
-        <option value="price">Price</option>
-        <option value="price-reverse">Price reverse</option>
-    </select> --}}
+        <option {{#if ([helpers/isEqual] sortBy "none")}}selected{{/if}} value="none">None</option>
+        <option {{#if ([helpers/isEqual] sortBy "priceAsc")}}selected{{/if}} value="priceAsc">Lower price</option>
+        <option {{#if ([helpers/isEqual] sortBy "priceDesc")}}selected{{/if}} value="priceDesc">Higher price</option>
+        <option {{#if ([helpers/isEqual] sortBy "nameAsc")}}selected{{/if}} value="nameAsc">Name</option>
+        <option {{#if ([helpers/isEqual] sortBy "nameDesc")}}selected{{/if}} value="nameDesc">Name reverse</option>
+    </select>
 </div>

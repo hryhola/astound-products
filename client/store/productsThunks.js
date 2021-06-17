@@ -2,9 +2,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import queryString from "query-string";
 
-import { setCurrentPage, setPerPage } from "./productsSlice";
+import { setCurrentPage, setPerPage, setSortBy } from "./productsSlice";
 
 const url = `http://${process.env.APP_HOST}:${process.env.APP_PORT}`;
+
+export const changeSoryBy = createAsyncThunk("products/changeSoryBy", async (sortBy, { dispatch, getState }) => {
+    dispatch(setSortBy(sortBy));
+    dispatch(setCurrentPage(1));
+    dispatch(fetchProducts());
+});
 
 export const changePerPage = createAsyncThunk("products/changePerPage", async (perPage, { dispatch, getState }) => {
     dispatch(setPerPage(perPage));
@@ -31,7 +37,7 @@ export const changePage = createAsyncThunk("products/changePage", async (page, {
 
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async (_, { rejectWithValue, getState }) => {
     const { products } = getState();
-    const { currentPage, perPage } = products.pagination;
+    const { currentPage, perPage, sortBy } = products.pagination;
     const { refinement } = products;
 
     let apiUrl = `${url}/api/list`;
@@ -39,6 +45,7 @@ export const fetchProducts = createAsyncThunk("products/fetchProducts", async (_
     let getParams = {
         page: currentPage,
         perPage,
+        sortBy
     };
 
     if (refinement) {

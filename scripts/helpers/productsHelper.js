@@ -51,12 +51,53 @@ productsHelper.applyRefinements = (productsData, refinements) => {
 
     return products;
 };
+/**
+ * Mutable.
+ */
+productsHelper.sortBy = (masterProductList, sortBy) => {
+    switch (sortBy) {
+        case "priceAsc": {
+            masterProductList.forEach((master) => {
+                master.variations.sort((a, b) => a.price - b.price);
+            });
 
-// productsHelper.sortBy = (productsData, sortBy) => {
-//     switch (sortBy) {
-//         case "price": return [].sort(p => )
-//     }
-// }
+            masterProductList.sort((a, b) => a.variations[0].price - b.variations[0].price);
+            return masterProductList;
+        }
+        case "priceDesc": {
+            masterProductList.forEach((master) => {
+                master.variations.sort((a, b) => b.price - a.price);
+            });
+
+            masterProductList.sort((a, b) => b.variations[0].price - a.variations[0].price);
+            return masterProductList;
+        }
+        case "nameAsc": {
+            masterProductList.sort((a, b) => {
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+
+                if (aName < bName) return -1;
+                if (aName > bName) return 1;
+
+                return 0;
+            });
+            return masterProductList;
+        }
+        case "nameDesc": {
+            masterProductList.sort((a, b) => {
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+
+                if (aName > bName) return -1;
+                if (aName < bName) return 1;
+
+                return 0;
+            });
+            return masterProductList;
+        }
+    }
+};
 
 productsHelper.getCertainProducts = ({ refinements }) => {
     const allProducts = ProductMgr.getAllProductes();
