@@ -1,6 +1,7 @@
 .refinement {
     position: fixed;
     width: 25%;
+    min-width: 225px;
     overflow-y: scroll;
     height: calc(100vh - 56px);
 }
