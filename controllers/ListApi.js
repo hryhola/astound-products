@@ -25,7 +25,7 @@ server.get("/api/list", function (req, res) {
 
         const { page: pageData, totalPages } = pageHelper.pagination(data, perPage, page);
 
-        res.json({ data: pageData, totalPages });
+        res.json({ data: pageData || [], totalPages });
     }
 });
 
